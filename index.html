@@ -22,14 +22,14 @@ button{font-family:inherit;cursor:pointer}
 .logo-font{font-family:'Poppins',sans-serif;letter-spacing:-0.04em}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .2s}
 .card:hover{border-color:var(--surface-3)}
-.pill{background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--text-2);transition:all .2s;display:flex;align-items:center;gap:6px}
+.pill{background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--text-2);transition:all .2s;display:flex;align-items:center;gap:6px;text-decoration:none}
 .pill.on{background:var(--accent);color:#000;border-color:var(--accent)}
 .tab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:700;color:var(--text-2);border-bottom:2px solid transparent;cursor:pointer;transition:all .2s}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-dim)}
-.nav{padding:10px 14px;border-radius:8px;cursor:pointer;color:var(--text-2);font-size:13px;font-weight:600;background:none;border:none;width:100%;text-align:left;transition:all .15s;display:flex;align-items:center;gap:12px}
+.nav{padding:10px 14px;border-radius:8px;cursor:pointer;color:var(--text-2);font-size:13px;font-weight:600;background:none;border:none;width:100%;text-align:left;transition:all .15s;display:flex;align-items:center;gap:12px;text-decoration:none}
 .nav:hover{background:var(--surface-2);color:var(--text)}
 .nav.on{background:var(--accent-dim);color:var(--accent)}
-.match-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:6px;cursor:pointer;transition:all .2s}
+.match-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:6px;cursor:pointer;transition:all .2s;display:block;text-decoration:none;color:inherit}
 .match-row:hover{border-color:var(--accent);background:var(--surface-2)}
 .league-h{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface-2);border-left:3px solid var(--accent);border-radius:6px;margin:16px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--live);display:inline-block;animation:pulse 1.5s infinite}
@@ -41,7 +41,7 @@ button{font-family:inherit;cursor:pointer}
 .odds.susp{opacity:.25;text-decoration:line-through;cursor:not-allowed;background:var(--surface-3)}
 .odds.chg{background:var(--warn);color:#000;border-color:var(--warn);font-weight:800}
 .mobile-tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
-.mobile-tab{flex:1;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:var(--text-2);background:none;border:none;transition:color .15s}
+.mobile-tab{flex:1;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;color:var(--text-2);background:none;border:none;transition:color .15s;text-decoration:none}
 .mobile-tab.on{color:var(--accent)}
 .toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:100;box-shadow:0 12px 32px rgba(0,0,0,0.6);animation:slideDown .25s cubic-bezier(0.4,0,0.2,1)}
 @keyframes slideDown{from{top:40px;opacity:0}to{top:70px;opacity:1}}
@@ -75,17 +75,17 @@ var CONFIG = {
   API_KEY: "toa_live_hapq7b186dn7fabp",
   BASE_URL: "https://api.bettingdataapi.com",
   SPORT_KEY: "basketball_nba",
-  USE_PROXY: true // CORS engelini aşmak için proxy kullan
+  USE_PROXY: true
 };
 
 var MOCK_MATCHES = [
-  {id:1,sport:"football",league:"Ligue 1",home:"ESTAC Troyes",away:"Le Havre AC",hs:0,as:0,min:-90,live:false,odds:[2.02,3.55,3.45],timeStr:"Nov 20, 22:45",xg:[1.2,0.8]},
+  {id:1,sport:"football",league:"Ligue 1",home:"ESTAC Troyes",away:"Le Havre AC",hs:0,as:0,min:-90,live:false,odds:[2.02,3.55,3.45],timeStr:"20 Kas, 22:45",xg:[1.2,0.8]},
   {id:2,sport:"football",league:"UEFA Europa League",home:"Celtic",away:"Besiktas",hs:1,as:1,min:76,live:true,odds:[2.96,3.85,2.16],xg:[1.5,1.1],poss:[48,52],shots:[8,6]},
   {id:3,sport:"football",league:"Premier League",home:"Arsenal",away:"Brighton",hs:2,as:1,min:67,live:true,odds:[2.10,3.40,3.60],xg:[2.1,0.9],poss:[58,42],shots:[12,5]},
   {id:4,sport:"football",league:"LaLiga",home:"Real Madrid",away:"Sevilla",hs:1,as:0,min:54,live:true,odds:[1.35,5.00,8.50],xg:[1.8,0.3],poss:[62,38],shots:[10,3]},
   {id:5,sport:"basketball",league:"NBA",home:"Lakers",away:"Celtics",hs:78,as:82,min:38,live:true,odds:[2.05,1.78]},
-  {id:6,sport:"football",league:"Premier League",home:"Liverpool",away:"Everton",hs:0,as:0,min:-90,live:false,odds:[1.45,4.20,6.50],timeStr:"Today 20:00",xg:[1.9,0.7]},
-  {id:7,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Today 21:30",xg:[1.4,1.2]}
+  {id:6,sport:"football",league:"Premier League",home:"Liverpool",away:"Everton",hs:0,as:0,min:-90,live:false,odds:[1.45,4.20,6.50],timeStr:"Bugün 20:00",xg:[1.9,0.7]},
+  {id:7,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Bugün 21:30",xg:[1.4,1.2]}
 ];
 
 var S = {
@@ -103,7 +103,7 @@ function upcoming(){return S.matches.filter(function(m){return !m.live})}
 function potential(){return S.slip.reduce(function(a,s){return s.status==="ok"?a+S.stake*s.od:a},0)}
 function slipKey(s){return s.mid+"|"+s.mkt+"|"+s.pick}
 function isSusp(k){if(!(k in S.susp))S.susp[k]=Math.random()<0.06;return S.susp[k]}
-function clock(m){ if(m.live) return m.min+"'"; return m.timeStr || "Soon"; }
+function clock(m){ if(m.live) return m.min+"'"; return m.timeStr || "Yakında"; }
 function toast(t,ok){S.toast={t:t,ok:ok};render();setTimeout(function(){S.toast=null;render()},3500)}
 function fmt(n){return Number(n).toFixed(2)}
 function teamColor(name){var h=0;for(var i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))%360;return "hsl("+h+",45%,30%)"}
@@ -111,18 +111,16 @@ function initials(name){var p=name.trim().split(" ");return p.length>1?(p[0][0]+
 function groupByLeague(list){var out=[],seen={};list.forEach(function(m){if(!seen[m.league]){seen[m.league]={league:m.league,ms:[]};out.push(seen[m.league])}seen[m.league].ms.push(m)});return out}
 
 /* =========================================================
-   API İSTEĞİ (CORS PROXY EKLENDİ)
+   API İSTEĞİ (allorigins PROXY)
    ========================================================= */
 async function fetchRealOdds() {
   try {
     var targetUrl = CONFIG.BASE_URL + "/odds/?sport_key=" + CONFIG.SPORT_KEY;
     
-    // CORS engelini aşmak için proxy kullanıyoruz
+    // allorigins proxy'si header'ları daha iyi destekler
     var fetchUrl = CONFIG.USE_PROXY 
-      ? "https://corsproxy.io/?" + encodeURIComponent(targetUrl) 
+      ? "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl) 
       : targetUrl;
-
-    console.log("İstek atılıyor:", fetchUrl);
 
     var res = await fetch(fetchUrl, {
       method: 'GET',
@@ -135,7 +133,7 @@ async function fetchRealOdds() {
     if (!res.ok) throw new Error("HTTP " + res.status);
     
     var data = await res.json();
-    console.log("API'den Gelen Ham Veri:", data); // Konsolda görünecek
+    console.log("API Ham Veri:", data); 
 
     if (!Array.isArray(data) || data.length === 0) {
       throw new Error("Boş veri döndü veya format hatalı");
@@ -177,10 +175,11 @@ async function fetchRealOdds() {
     toast("Canlı veriler API'den yüklendi!", true);
 
   } catch (e) {
-    console.error("API Hatası Detayı:", e);
+    console.warn("API Hatası Detayı:", e);
     S.loading = false;
     render();
-    toast("Canlı veri çekilemedi, demo moduna geçildi.", false);
+    // API başarısız olursa mock veriler zaten ekranda olduğu için kullanıcıya sadece bilgi veriyoruz.
+    toast("Canlı API'ye ulaşılamadı. Demo verileriyle devam ediliyor.", false);
   }
 }
 
@@ -219,20 +218,22 @@ function oddsBtn(m,mkt,pick,od,label){
   var cls="odds";
   if(sel)cls+=sel.status==="susp"?" susp":sel.status==="changed"?" chg":" sel";
   if(label) {
-      return '<button class="'+cls+'" onclick="event.stopPropagation();add(byId('+m.id+'),\''+mkt+'\',\''+pick+'\','+od+')" style="display:flex;justify-content:space-between;padding:10px 12px"><span style="color:inherit;font-size:12px;opacity:0.8">'+label+'</span><span>'+fmt(od)+'</span></button>';
+      return '<button class="'+cls+'" onclick="event.preventDefault();event.stopPropagation();add(byId('+m.id+'),\''+mkt+'\',\''+pick+'\','+od+')" style="display:flex;justify-content:space-between;padding:10px 12px"><span style="color:inherit;font-size:12px;opacity:0.8">'+label+'</span><span>'+fmt(od)+'</span></button>';
   }
-  return '<button class="'+cls+'" onclick="event.stopPropagation();add(byId('+m.id+'),\''+mkt+'\',\''+pick+'\','+od+')">'+fmt(od)+'</button>';
+  return '<button class="'+cls+'" onclick="event.preventDefault();event.stopPropagation();add(byId('+m.id+'),\''+mkt+'\',\''+pick+'\','+od+')">'+fmt(od)+'</button>';
 }
 function avatar(name){
   return '<div style="width:28px;height:28px;border-radius:50%;background:'+teamColor(name)+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;border:1px solid rgba(255,255,255,0.08)">'+initials(name)+'</div>';
 }
+
+// DİKKAT: Tıklama sorununu çözmek için maç satırları <a> etiketine dönüştürüldü.
 function matchRow(m){
   var three=m.odds.length===3;
   var picks=three?[m.home,"draw",m.away]:[m.home,m.away];
   var labels=three?["1","x","2"]:["1","2"];
   var cols=three?"grid-cols-3":"grid-cols-2";
   
-  var h='<div class="match-row fade-in" onclick="window.location.hash=\'#/match/'+m.id+'\'">';
+  var h='<a href="#/match/'+m.id+'" class="match-row fade-in">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
   h+='<span style="color:'+(m.live?"#ff4444":"#8b9eb0")+';font-weight:700">'+clock(m)+'</span></div><div style="color:#7a8f9e;font-weight:600">'+m.league+'</div></div>';
@@ -246,18 +247,18 @@ function matchRow(m){
   labels.forEach(function(l){h+='<span>'+l+'</span>'});
   h+='</div><div class="grid '+cols+' gap-1">';
   for(var i=0;i<(three?3:2);i++)h+='<div>'+oddsBtn(m,"Match Result",picks[i],m.odds[i])+'</div>';
-  h+='</div></div></div></div>';
+  h+='</div></div></div></a>';
   return h;
 }
 function leagueBlock(g){
-  return '<div class="league-h"><span>'+g.league+'</span><span style="color:#8b9eb0;font-weight:600;font-size:10px;text-transform:none">'+g.ms.length+' '+(g.ms.length===1?'match':'matches')+'</span></div>'+g.ms.map(matchRow).join("");
+  return '<div class="league-h"><span>'+g.league+'</span><span style="color:#8b9eb0;font-weight:600;font-size:10px;text-transform:none">'+g.ms.length+' '+(g.ms.length===1?'maç':'maç')+'</span></div>'+g.ms.map(matchRow).join("");
 }
 function searchHits(){
   var q=S.search.toLowerCase().trim();if(!q)return"";
   var out="";
   S.matches.forEach(function(m){
     if((m.home+" "+m.away+" "+m.league).toLowerCase().indexOf(q)>=0){
-      out+='<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36" onclick="window.location.hash=\'#/match/'+m.id+'\'">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></div>';
+      out+='<a href="#/match/'+m.id+'" style="display:block;padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36;text-decoration:none;color:inherit">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></a>';
     }
   });
   return out||'<div style="padding:20px;text-align:center;color:#7a8f9e;font-size:13px">Sonuç yok</div>';
@@ -312,8 +313,8 @@ function pageFootball(){
   return h;
 }
 function pageMatch(){
-  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Maç bulunamadı</div>';
-  var h='<button style="background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0" onclick="window.location.hash=\'#/home\'">← Geri Dön</button>';
+  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Maç bulunamadı. <a href="#/home" style="color:#00e5ff">Geri dön</a></div>';
+  var h='<a href="#/home" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0;text-decoration:none">← Geri Dön</a>';
   
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
   h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+'</div></div>';
@@ -441,9 +442,9 @@ function shell(html){
   var h='';
   h+='<header style="background:#0b141c;border-bottom:1px solid #1c2a36;position:sticky;top:0;z-index:30;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px">';
   h+='<button class="md:hidden" style="background:none;border:none;color:#7a8f9e;font-size:20px;cursor:pointer;padding:0" onclick="document.getElementById(\'drawer\').classList.toggle(\'open\')">☰</button>';
-  h+='<div class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer" onclick="window.location.hash=\'#/home\'"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></div>';
+  h+='<a href="#/home" class="logo-font" style="font-size:22px;font-weight:900;text-decoration:none;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></a>';
   h+='<nav class="hidden md:flex" style="gap:2px;margin-left:20px">';
-  NAV.forEach(function(n){h+='<button class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px" onclick="window.location.hash=\'#/'+n[0]+'\'">'+n[1]+'</button>'});
+  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px">'+n[1]+'</a>'});
   h+='</nav><div style="flex:1"></div>';
   h+='<div class="balance-pill hidden sm:flex"><span style="color:#7a8f9e;font-size:10px;font-weight:700">Bakiye</span><span class="amt">'+fmt(S.balance)+'</span><span style="color:#7a8f9e;font-size:9px">USDT</span></div>';
   h+='<button style="background:#192833;border:1px solid #1c2a36;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span style="color:#00e5ff">●</span>Demo</button>';
@@ -451,14 +452,14 @@ function shell(html){
   
   h+='<div style="max-width:1280px;margin:0 auto;display:flex">';
   h+='<aside id="drawer" class="hidden md:block" style="width:200px;border-right:1px solid #1c2a36;min-height:calc(100vh - 56px);padding:16px 10px;flex-shrink:0">';
-  NAV.forEach(function(n){h+='<button class="nav '+(S.route===n[0]?"on":"")+'" onclick="window.location.hash=\'#/'+n[0]+'\'"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></button>'});
+  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
   h+='<div style="font-size:9px;font-weight:800;color:#555;padding:20px 14px 6px;letter-spacing:.1em">SPORLAR</div>';
   var sportsList=[...new Set(S.matches.map(function(m){return m.sport}))];
   sportsList.forEach(function(sp){
     var cnt=S.matches.filter(function(m){return m.sport===sp&&m.live}).length;
-    h+='<button class="nav" onclick="S.filter=\''+sp+'\';window.location.hash=\'#/live\'"><span style="width:18px;text-align:center">'+(sp==="football"?"⚽":sp==="basketball"?"🏀":"🏅")+'</span><span style="flex:1">'+(sp==="football"?"Futbol":"Basketbol")+'</span>';
+    h+='<a href="#/live" class="nav" onclick="S.filter=\''+sp+'\'"><span style="width:18px;text-align:center">'+(sp==="football"?"⚽":sp==="basketball"?"🏀":"🏅")+'</span><span style="flex:1">'+(sp==="football"?"Futbol":"Basketbol")+'</span>';
     if(cnt)h+='<span style="font-size:9px;background:rgba(255,68,68,0.15);color:#ff8a80;padding:2px 6px;border-radius:4px;font-weight:800">'+cnt+'</span>';
-    h+='</button>';
+    h+='</a>';
   });
   h+='<div style="margin-top:28px;padding:12px;background:#121c24;border-radius:8px;border:1px solid #1c2a36"><div style="font-size:9px;color:#555;line-height:1.6">18+ Sadece. Demo verisi. Gerçek para yoktur. Sorumlu oynayın.</div></div>';
   h+='</aside>';
@@ -473,12 +474,12 @@ function shell(html){
   h+='</div>';
 
   if(S.slip.length&&S.route!=="bets"){
-    h+='<div class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6)" onclick="window.location.hash=\'#/bets\'">';
+    h+='<a href="#/bets" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);text-decoration:none">';
     h+='<div><div style="font-size:10px;color:#7a8f9e;margin-bottom:2px;font-weight:600">Kupon · '+S.slip.length+' seçim</div><div style="font-weight:900;color:#00e5ff;font-size:14px;font-variant-numeric:tabular-nums">'+fmt(potential())+' USDT</div></div>';
-    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Kuponu Aç →</button></div>';
+    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Kuponu Aç →</button></a>';
   }else if(!S.slip.length){
     h+='<div class="mobile-tabbar md:hidden">';
-    NAV.forEach(function(n){h+='<button class="mobile-tab '+(S.route===n[0]?"on":"")+'" onclick="window.location.hash=\'#/'+n[0]+'\'"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></button>'});
+    NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="mobile-tab '+(S.route===n[0]?"on":"")+'"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
     h+='</div>';
   }
 
