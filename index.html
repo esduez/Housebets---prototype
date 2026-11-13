@@ -69,17 +69,37 @@ button{font-family:inherit;cursor:pointer}
 <div id="app"></div>
 <script>
 /* =========================================================
-   DATA
+   MOCK DATA (Live & Upcoming, All Sports)
    ========================================================= */
 var MOCK_MATCHES = [
+  // --- CANLI MAÇLAR (LIVE) ---
   {id:1,sport:"football",league:"Premier League",home:"Arsenal",away:"Brighton",hs:2,as:1,min:67,live:true,odds:[2.10,3.40,3.60],xg:[2.1,0.9],poss:[58,42],shots:[12,5], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/150px-Arsenal_FC.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Brighton_%26_Hove_Albion_logo.svg/150px-Brighton_%26_Hove_Albion_logo.svg.png"]},
   {id:2,sport:"football",league:"LaLiga",home:"Real Madrid",away:"Sevilla",hs:1,as:0,min:54,live:true,odds:[1.35,5.00,8.50],xg:[1.8,0.3],poss:[62,38],shots:[10,3], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/150px-Real_Madrid_CF.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Sevilla_FC_logo.svg/150px-Sevilla_FC_logo.svg.png"]},
   {id:3,sport:"football",league:"Serie A",home:"Inter",away:"Roma",hs:2,as:2,min:78,live:true,odds:[1.90,3.60,3.90],xg:[2.0,1.9],poss:[51,49],shots:[11,10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/150px-FC_Internazionale_Milano_2021.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/AS_Roma_logo_%282017%29.svg/150px-AS_Roma_logo_%282017%29.svg.png"]},
   {id:4,sport:"basketball",league:"NBA",home:"Lakers",away:"Celtics",hs:78,as:82,min:38,live:true,odds:[2.05,1.78],poss:[50,50],shots:[0,0], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/150px-Los_Angeles_Lakers_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Boston_Celtics.svg/150px-Boston_Celtics.svg.png"]},
   {id:5,sport:"esports",league:"CS2 Major",home:"Natus Vincere",away:"FaZe Clan",hs:1,as:0,min:22,live:true,odds:[1.85,1.95], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/2/23/Natus_Vincere_logo.svg/150px-Natus_Vincere_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3e/FaZe_Clan_logo.svg/150px-FaZe_Clan_logo.svg.png"]},
   {id:6,sport:"tennis",league:"ATP Finals",home:"C. Alcaraz",away:"J. Sinner",hs:1,as:1,min:3,live:true,odds:[1.70,2.10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Carlos_Alcaraz_2022.jpg/120px-Carlos_Alcaraz_2022.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Jannik_Sinner_2023.jpg/120px-Jannik_Sinner_2023.jpg"]},
-  {id:7,sport:"football",league:"Premier League",home:"Man City",away:"Liverpool",hs:0,as:0,min:-90,live:false,odds:[1.85,3.80,4.00],timeStr:"Today 22:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/150px-Manchester_City_FC_badge.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/150px-Liverpool_FC.svg.png"]},
-  {id:8,sport:"esports",league:"LoL Worlds",home:"T1",away:"Gen.G",hs:0,as:0,min:-1440,live:false,odds:[1.75,2.05],timeStr:"Tomorrow 15:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/T1_Logo.svg/150px-T1_Logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Gen.G_Logo.svg/150px-Gen.G_Logo.svg.png"]}
+
+  // --- GELECEK MAÇLAR (UPCOMING) ---
+  // Futbol
+  {id:10,sport:"football",league:"Premier League",home:"Man City",away:"Liverpool",hs:0,as:0,min:-90,live:false,odds:[1.85,3.80,4.00],timeStr:"Today 22:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/150px-Manchester_City_FC_badge.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/150px-Liverpool_FC.svg.png"]},
+  {id:11,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Tomorrow 21:30", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/150px-FC_Barcelona_%28crest%29.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_Madrid_2017_logo.svg/150px-Atletico_Madrid_2017_logo.svg.png"]},
+  {id:12,sport:"football",league:"Bundesliga",home:"Bayern",away:"Dortmund",hs:0,as:0,min:-2880,live:false,odds:[1.70,4.20,4.50],timeStr:"Sat 18:30", logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/150px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png","https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/150px-Borussia_Dortmund_logo.svg.png"]},
+  {id:13,sport:"football",league:"Ligue 1",home:"PSG",away:"Marseille",hs:0,as:0,min:-4320,live:false,odds:[1.55,4.00,6.00],timeStr:"Sun 20:45", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/a/a7/Paris_Saint-Germain_F.C..svg/150px-Paris_Saint-Germain_F.C..svg.png","https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Olympique_Marseille_logo.svg/150px-Olympique_Marseille_logo.svg.png"]},
+  
+  // Basketbol
+  {id:14,sport:"basketball",league:"NBA",home:"Warriors",away:"Suns",hs:0,as:0,min:-300,live:false,odds:[1.90,1.90],timeStr:"Tomorrow 02:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/0/01/Golden_State_Warriors_logo.svg/150px-Golden_State_Warriors_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Phoenix_Suns_logo.svg/150px-Phoenix_Suns_logo.svg.png"]},
+  {id:15,sport:"basketball",league:"NBA",home:"Bucks",away:"Heat",hs:0,as:0,min:-600,live:false,odds:[1.55,2.40],timeStr:"Tomorrow 03:30", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/Milwaukee_Bucks_logo.svg/150px-Milwaukee_Bucks_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/fb/Miami_Heat_logo.svg/150px-Miami_Heat_logo.svg.png"]},
+
+  // E-Spor
+  {id:16,sport:"esports",league:"LoL Worlds",home:"T1",away:"Gen.G",hs:0,as:0,min:-1440,live:false,odds:[1.75,2.05],timeStr:"Tomorrow 15:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/T1_Logo.svg/150px-T1_Logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Gen.G_Logo.svg/150px-Gen.G_Logo.svg.png"]},
+  {id:17,sport:"esports",league:"CS2 Major",home:"G2 Esports",away:"Vitality",hs:0,as:0,min:-400,live:false,odds:[2.10,1.70],timeStr:"Today 18:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/G2_Esports_logo.svg/150px-G2_Esports_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/2/21/Team_Vitality_logo.svg/150px-Team_Vitality_logo.svg.png"]},
+
+  // Tenis
+  {id:18,sport:"tennis",league:"ATP Finals",home:"N. Djokovic",away:"D. Medvedev",hs:0,as:0,min:-720,live:false,odds:[1.60,2.30],timeStr:"Tomorrow 18:00", logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Novak_Djokovic_2022.jpg/120px-Novak_Djokovic_2022.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Daniil_Medvedev_2021.jpg/120px-Daniil_Medvedev_2021.jpg"]},
+
+  // MMA
+  {id:19,sport:"mma",league:"UFC 301",home:"J. Jones",away:"S. Miocic",hs:0,as:0,min:-2000,live:false,odds:[1.40,2.85],timeStr:"Sat 05:00", logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Jon_Jones_2014.jpg/120px-Jon_Jones_2014.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Stipe_Miocic_2018.jpg/120px-Stipe_Miocic_2018.jpg"]}
 ];
 
 var S = {
@@ -91,14 +111,13 @@ var S = {
 };
 
 /* =========================================================
-   CORE FUNCTIONS
+   CORE & NAVIGATION (Kusursuz Geçiş)
    ========================================================= */
-// KUSURSUZ YÖNLENDİRME FONKSİYONU (URL ile uğraşmaz, direkt ekrana basar)
 window.nav = function(route, id) {
   S.route = route;
   if (id !== undefined) S.mid = id;
-  window.scrollTo(0, 0); // Sayfa başına dön
-  render(); // Ekranı anında güncelle
+  window.scrollTo(0, 0);
+  render();
 };
 
 function byId(id){for(var i=0;i<S.matches.length;i++)if(S.matches[i].id===id)return S.matches[i];return null}
@@ -169,7 +188,6 @@ function matchRow(m){
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
   
-  // Tıklama direkt nav() fonksiyonuna bağlı.
   var h='<div class="match-row fade-in" onclick="nav(\'match\', '+m.id+')">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
@@ -221,11 +239,11 @@ function pageHome(){
 
   var liv=live().filter(function(m){return S.filter==="all"||m.sport===S.filter});
   h+='<div class="flex items-center justify-between mb-1 mt-5"><h2 class="text-[14px] font-bold flex items-center gap-2"><span class="live-dot"></span>Live Now</h2><span style="color:#7a8f9e;font-size:11px">'+liv.length+' in play</span></div>';
-  h+=liv.length?groupByLeague(liv.slice(0,8)).map(leagueBlock).join(""):'<div class="empty"><div class="empty-icon">⏳</div><div class="empty-title">No live matches</div></div>';
+  h+=liv.length?groupByLeague(liv.slice(0,10)).map(leagueBlock).join(""):'<div class="empty"><div class="empty-icon">⏳</div><div class="empty-title">No live matches</div></div>';
   
   var up=upcoming().filter(function(m){return S.filter==="all"||m.sport===S.filter});
   h+='<div class="flex items-center justify-between mb-1 mt-6"><h2 class="text-[14px] font-bold">Upcoming Matches</h2><span style="color:#7a8f9e;font-size:11px">Next up</span></div>';
-  h+=up.length?groupByLeague(up.slice(0,6)).map(leagueBlock).join(""):'<div class="empty"><div class="empty-title">No upcoming matches</div></div>';
+  h+=up.length?groupByLeague(up.slice(0,15)).map(leagueBlock).join(""):'<div class="empty"><div class="empty-title">No upcoming matches</div></div>';
   
   return h;
 }
