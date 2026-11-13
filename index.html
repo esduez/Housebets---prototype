@@ -9,7 +9,6 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 :root{
-  /* Housebets Koyu Lacivert Paleti */
   --bg: #0b141c;
   --surface: #121c24;
   --surface-2: #192833;
@@ -17,7 +16,7 @@
   --border: #1c2a36;
   --text: #ffffff;
   --text-2: #8b9eb0;
-  --accent: #00e5ff; /* Housebets Turkuazı */
+  --accent: #00e5ff; 
   --accent-dim: rgba(0, 229, 255, 0.15);
   --live: #ff4444;
   --warn: #ffaa00;
@@ -137,7 +136,7 @@ button{font-family:inherit;cursor:pointer}
 .slip-item:last-child{border-bottom:none}
 .badge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:800;letter-spacing:.02em}
 
-/* YAMI İstatistik Paneli (Analytics) */
+/* YAMI İstatistik Paneli */
 .stat-bar-container{margin-bottom:14px}
 .stat-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-2);font-weight:600;margin-bottom:6px}
 .stat-bar{height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden;display:flex}
@@ -175,14 +174,18 @@ var S = {
   route:"home", mid:1, matches:[], loading:true,
   slip:[], stake:10, bets:[],
   follows:[], filter:"all", 
-  marketTab:"Markets", matchTab:"Markets", betsTab:"open", // Yami'nin maç detay sekmeleri
+  marketTab:"Markets", matchTab:"Markets", betsTab:"open",
   search:"", toast:null, susp:{}, balance:1250.00
 };
 
 /* ============================================
-   HELPERS
+   HELPERS & ROUTING
    ============================================ */
-function go(r){location.hash="#/"+r}
+function go(r){
+  location.hash = "#/" + r;
+  // Sayfa yenilenmesini garantile
+  setTimeout(function(){ norm(); render(); }, 50); 
+}
 function byId(id){for(var i=0;i<S.matches.length;i++)if(S.matches[i].id===id)return S.matches[i];return null}
 function live(){return S.matches.filter(function(m){return m.live})}
 function upcoming(){return S.matches.filter(function(m){return !m.live})}
@@ -247,7 +250,8 @@ function matchRow(m){
   var labels=three?["1","x","2"]:["1","2"];
   var cols=three?"grid-cols-3":"grid-cols-2";
   
-  var h='<div class="match-row fade-in" onclick="go(\'match/'+m.id+'\')">';
+  // DİKKAT: onclick doğrudan match-row div'ine eklendi.
+  var h='<div class="match-row fade-in" onclick="window.location.hash=\'#/match/'+m.id+'\'">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
   h+='<span style="color:'+(m.live?"#ff4444":"#8b9eb0")+';font-weight:700">'+clock(m)+'</span></div><div style="color:#7a8f9e;font-weight:600">'+m.league+'</div></div>';
@@ -272,7 +276,7 @@ function searchHits(){
   var out="";
   S.matches.forEach(function(m){
     if((m.home+" "+m.away+" "+m.league).toLowerCase().indexOf(q)>=0){
-      out+='<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36" onclick="go(\'match/'+m.id+'\')">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></div>';
+      out+='<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36" onclick="window.location.hash=\'#/match/'+m.id+'\'">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></div>';
     }
   });
   return out||'<div style="padding:20px;text-align:center;color:#7a8f9e;font-size:13px">No results</div>';
@@ -328,7 +332,7 @@ function pageFootball(){
 }
 function pageMatch(){
   var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found</div>';
-  var h='<button style="background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0" onclick="go(\'home\')">← Geri Dön</button>';
+  var h='<button style="background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0" onclick="window.location.hash=\'#/home\'">← Geri Dön</button>';
   
   // Skorboard
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
@@ -336,7 +340,7 @@ function pageMatch(){
   h+='<div style="text-align:center"><div style="font-size:36px;font-weight:900;color:#00e5ff;line-height:1;font-variant-numeric:tabular-nums">'+m.hs+'</div><div style="font-size:36px;font-weight:900;color:#00e5ff;line-height:1;font-variant-numeric:tabular-nums">'+m.as+'</div></div>';
   h+='<div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.away).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.away+'</div></div></div></div>';
 
-  // YAMI TABS (Markets & Stats)
+  // YAMI TABS
   h+='<div style="display:flex;background:#121c24;border-radius:12px;margin-bottom:16px;border:1px solid #1c2a36;overflow:hidden">';
   h+='<div class="tab '+(S.matchTab==="Markets"?"active":"")+'" onclick="S.matchTab=\'Markets\';render()">Marketler</div>';
   h+='<div class="tab '+(S.matchTab==="Stats"?"active":"")+'" onclick="S.matchTab=\'Stats\';render()">📊 İstatistik & Analiz</div>';
@@ -485,9 +489,9 @@ function shell(html){
   h+='<header style="background:#0b141c;border-bottom:1px solid #1c2a36;position:sticky;top:0;z-index:30;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px">';
   h+='<button class="md:hidden" style="background:none;border:none;color:#7a8f9e;font-size:20px;cursor:pointer;padding:0" onclick="document.getElementById(\'drawer\').classList.toggle(\'open\')">☰</button>';
   // HOUSE BETS LOGO
-  h+='<div class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer" onclick="go(\'home\')"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></div>';
+  h+='<div class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer" onclick="window.location.hash=\'#/home\'"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></div>';
   h+='<nav class="hidden md:flex" style="gap:2px;margin-left:20px">';
-  NAV.forEach(function(n){h+='<button class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px" onclick="go(\''+n[0]+'\')">'+n[1]+'</button>'});
+  NAV.forEach(function(n){h+='<button class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px" onclick="window.location.hash=\'#/'+n[0]+'\'">'+n[1]+'</button>'});
   h+='</nav><div style="flex:1"></div>';
   h+='<div class="balance-pill hidden sm:flex"><span style="color:#7a8f9e;font-size:10px;font-weight:700">Balance</span><span class="amt">'+fmt(S.balance)+'</span><span style="color:#7a8f9e;font-size:9px">USDT</span></div>';
   h+='<button style="background:#192833;border:1px solid #1c2a36;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span style="color:#00e5ff">●</span>Demo</button>';
@@ -497,12 +501,12 @@ function shell(html){
   
   // Sidebar
   h+='<aside id="drawer" class="hidden md:block" style="width:200px;border-right:1px solid #1c2a36;min-height:calc(100vh - 56px);padding:16px 10px;flex-shrink:0">';
-  NAV.forEach(function(n){h+='<button class="nav '+(S.route===n[0]?"on":"")+'" onclick="go(\''+n[0]+'\')"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></button>'});
+  NAV.forEach(function(n){h+='<button class="nav '+(S.route===n[0]?"on":"")+'" onclick="window.location.hash=\'#/'+n[0]+'\'"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></button>'});
   h+='<div style="font-size:9px;font-weight:800;color:#555;padding:20px 14px 6px;letter-spacing:.1em">SPORTS</div>';
   var sportsList=[...new Set(S.matches.map(function(m){return m.sport}))];
   sportsList.forEach(function(sp){
     var cnt=S.matches.filter(function(m){return m.sport===sp&&m.live}).length;
-    h+='<button class="nav" onclick="S.filter=\''+sp+'\';go(\'live\')"><span style="width:18px;text-align:center">'+(sp==="football"?"⚽":sp==="basketball"?"🏀":"🏅")+'</span><span style="flex:1">'+sp[0].toUpperCase()+sp.slice(1)+'</span>';
+    h+='<button class="nav" onclick="S.filter=\''+sp+'\';window.location.hash=\'#/live\'"><span style="width:18px;text-align:center">'+(sp==="football"?"⚽":sp==="basketball"?"🏀":"🏅")+'</span><span style="flex:1">'+sp[0].toUpperCase()+sp.slice(1)+'</span>';
     if(cnt)h+='<span style="font-size:9px;background:rgba(255,68,68,0.15);color:#ff8a80;padding:2px 6px;border-radius:4px;font-weight:800">'+cnt+'</span>';
     h+='</button>';
   });
@@ -522,12 +526,12 @@ function shell(html){
 
   // Mobile Bottom Bar (Slip or Tabbar)
   if(S.slip.length&&S.route!=="bets"){
-    h+='<div class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6)" onclick="go(\'bets\')">';
+    h+='<div class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6)" onclick="window.location.hash=\'#/bets\'">';
     h+='<div><div style="font-size:10px;color:#7a8f9e;margin-bottom:2px;font-weight:600">Slip · '+S.slip.length+' singles</div><div style="font-weight:900;color:#00e5ff;font-size:14px;font-variant-numeric:tabular-nums">'+fmt(potential())+' USDT</div></div>';
     h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open slip →</button></div>';
   }else if(!S.slip.length){
     h+='<div class="mobile-tabbar md:hidden">';
-    NAV.forEach(function(n){h+='<button class="mobile-tab '+(S.route===n[0]?"on":"")+'" onclick="go(\''+n[0]+'\')"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></button>'});
+    NAV.forEach(function(n){h+='<button class="mobile-tab '+(S.route===n[0]?"on":"")+'" onclick="window.location.hash=\'#/'+n[0]+'\'"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></button>'});
     h+='</div>';
   }
 
