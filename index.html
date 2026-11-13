@@ -69,19 +69,15 @@ button{font-family:inherit;cursor:pointer}
 <div id="app"></div>
 <script>
 /* =========================================================
-   🔑 API AYARLARI (Betting Data API)
+   🔑 API AYARLARI
    ========================================================= */
 var CONFIG = {
-  API_KEY: "toa_live_hapq7b186dn7fabp", // Görselden alınan anahtar
+  API_KEY: "toa_live_hapq7b186dn7fabp",
   BASE_URL: "https://api.bettingdataapi.com",
-  SPORT_KEY: "basketball_nba", // İstersen "soccer_epl" olarak değiştirebilirsin
-  REGION: "eu",
-  ODDS_FORMAT: "decimal"
+  SPORT_KEY: "basketball_nba",
+  USE_PROXY: true // CORS engelini aşmak için proxy kullan
 };
 
-/* =========================================================
-   MOCK VERİ (API çalışmazsa yedek)
-   ========================================================= */
 var MOCK_MATCHES = [
   {id:1,sport:"football",league:"Ligue 1",home:"ESTAC Troyes",away:"Le Havre AC",hs:0,as:0,min:-90,live:false,odds:[2.02,3.55,3.45],timeStr:"Nov 20, 22:45",xg:[1.2,0.8]},
   {id:2,sport:"football",league:"UEFA Europa League",home:"Celtic",away:"Besiktas",hs:1,as:1,min:76,live:true,odds:[2.96,3.85,2.16],xg:[1.5,1.1],poss:[48,52],shots:[8,6]},
@@ -100,9 +96,6 @@ var S = {
   search:"", toast:null, susp:{}, balance:1250.00
 };
 
-/* =========================================================
-   YARDIMCILAR
-   ========================================================= */
 function go(r){ location.hash = "#/"+r; setTimeout(function(){ norm(); render(); }, 50); }
 function byId(id){for(var i=0;i<S.matches.length;i++)if(S.matches[i].id===id)return S.matches[i];return null}
 function live(){return S.matches.filter(function(m){return m.live})}
@@ -118,15 +111,20 @@ function initials(name){var p=name.trim().split(" ");return p.length>1?(p[0][0]+
 function groupByLeague(list){var out=[],seen={};list.forEach(function(m){if(!seen[m.league]){seen[m.league]={league:m.league,ms:[]};out.push(seen[m.league])}seen[m.league].ms.push(m)});return out}
 
 /* =========================================================
-   API İSTEĞİ (Betting Data API)
+   API İSTEĞİ (CORS PROXY EKLENDİ)
    ========================================================= */
 async function fetchRealOdds() {
   try {
-    // Yeni API URL yapısı
-    var url = CONFIG.BASE_URL + "/odds/?sport_key=" + CONFIG.SPORT_KEY;
+    var targetUrl = CONFIG.BASE_URL + "/odds/?sport_key=" + CONFIG.SPORT_KEY;
     
-    // Kimlik doğrulama Header üzerinden yapılıyor
-    var res = await fetch(url, {
+    // CORS engelini aşmak için proxy kullanıyoruz
+    var fetchUrl = CONFIG.USE_PROXY 
+      ? "https://corsproxy.io/?" + encodeURIComponent(targetUrl) 
+      : targetUrl;
+
+    console.log("İstek atılıyor:", fetchUrl);
+
+    var res = await fetch(fetchUrl, {
       method: 'GET',
       headers: {
         'x-api-key': CONFIG.API_KEY,
@@ -134,24 +132,20 @@ async function fetchRealOdds() {
       }
     });
 
-    if (!res.ok) {
-      throw new Error("HTTP " + res.status);
-    }
+    if (!res.ok) throw new Error("HTTP " + res.status);
     
     var data = await res.json();
-    
+    console.log("API'den Gelen Ham Veri:", data); // Konsolda görünecek
+
     if (!Array.isArray(data) || data.length === 0) {
-      throw new Error("Boş veri döndü");
+      throw new Error("Boş veri döndü veya format hatalı");
     }
 
-    // API Verisini Bizim Formata Çevir
     var mapped = data.map(function(ev, i) {
-      // The Odds API benzeri bir yapı varsayıyoruz (bettingdataapi genelde benzer format kullanır)
-      var home = ev.home_team || "Home";
-      var away = ev.away_team || "Away";
+      var home = ev.home_team || ev.home || "Home";
+      var away = ev.away_team || ev.away || "Away";
       var odds = [2.00, 3.50, 3.00];
       
-      // Eğer oranlar bookmakers içindeyse
       if (ev.bookmakers && ev.bookmakers.length > 0) {
         var markets = ev.bookmakers[0].markets;
         if (markets && markets[0] && markets[0].outcomes) {
@@ -172,7 +166,7 @@ async function fetchRealOdds() {
         league: CONFIG.SPORT_KEY.toUpperCase().replace("_", " "),
         home: home, away: away, hs: 0, as: 0, min: -90, live: false,
         odds: odds, timeStr: timeStr,
-        xg: [1.2, 0.8], poss: [50, 50], shots: [0, 0] // İstatistikler simüle edilecek
+        xg: [1.2, 0.8], poss: [50, 50], shots: [0, 0]
       };
     });
 
@@ -180,19 +174,18 @@ async function fetchRealOdds() {
     S.source = "live";
     S.loading = false;
     render();
-    toast("Canlı oranlar yüklendi!", true);
+    toast("Canlı veriler API'den yüklendi!", true);
 
   } catch (e) {
-    console.warn("API Hatası:", e);
+    console.error("API Hatası Detayı:", e);
     S.loading = false;
     render();
-    // Hata durumunda mock veri zaten yüklü olduğu için ekstra bir şey yapmaya gerek yok
     toast("Canlı veri çekilemedi, demo moduna geçildi.", false);
   }
 }
 
 /* =========================================================
-   SLIP & BETTING
+   KUPON MANTIĞI
    ========================================================= */
 function add(m,mkt,pick,od){
   var s={mid:m.id,lbl:m.home+" v "+m.away,mkt:mkt,pick:pick,od:od,status:"ok",old:od};
@@ -507,7 +500,7 @@ function render(){
 window.addEventListener("hashchange",function(){norm();render()});
 
 /* =========================================================
-   CANLI SİMÜLASYON (API'den gelen maçlar için de çalışır)
+   CANLI SİMÜLASYON
    ========================================================= */
 setInterval(function(){
   var updated=false;
@@ -552,9 +545,9 @@ setInterval(function(){
    BAŞLAT
    ========================================================= */
 norm();
-S.matches = MOCK_MATCHES; // Önce mock veriyi yükle (anında görünsün)
+S.matches = MOCK_MATCHES;
 render();
-fetchRealOdds(); // Sonra API'den gerçek veriyi çek (gelirse güncelle)
+fetchRealOdds(); 
 </script>
 </body>
 </html>
