@@ -69,36 +69,21 @@ button{font-family:inherit;cursor:pointer}
 <div id="app"></div>
 <script>
 /* =========================================================
-   MOCK DATA (All Sports, Live & Upcoming)
+   MOCK DATA
    ========================================================= */
 var MOCK_MATCHES = [
-  // --- FOOTBALL (LIVE) ---
   {id:1,sport:"football",league:"Premier League",home:"Arsenal",away:"Brighton",hs:2,as:1,min:67,live:true,odds:[2.10,3.40,3.60],xg:[2.1,0.9],poss:[58,42],shots:[12,5], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/150px-Arsenal_FC.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Brighton_%26_Hove_Albion_logo.svg/150px-Brighton_%26_Hove_Albion_logo.svg.png"]},
   {id:2,sport:"football",league:"LaLiga",home:"Real Madrid",away:"Sevilla",hs:1,as:0,min:54,live:true,odds:[1.35,5.00,8.50],xg:[1.8,0.3],poss:[62,38],shots:[10,3], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/150px-Real_Madrid_CF.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Sevilla_FC_logo.svg/150px-Sevilla_FC_logo.svg.png"]},
   {id:3,sport:"football",league:"Serie A",home:"Inter",away:"Roma",hs:2,as:2,min:78,live:true,odds:[1.90,3.60,3.90],xg:[2.0,1.9],poss:[51,49],shots:[11,10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/150px-FC_Internazionale_Milano_2021.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/AS_Roma_logo_%282017%29.svg/150px-AS_Roma_logo_%282017%29.svg.png"]},
-  
-  // --- BASKETBALL (LIVE) ---
   {id:4,sport:"basketball",league:"NBA",home:"Lakers",away:"Celtics",hs:78,as:82,min:38,live:true,odds:[2.05,1.78],poss:[50,50],shots:[0,0], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/150px-Los_Angeles_Lakers_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Boston_Celtics.svg/150px-Boston_Celtics.svg.png"]},
   {id:5,sport:"basketball",league:"EuroLeague",home:"Real Madrid B",away:"Olympiacos",hs:55,as:49,min:28,live:true,odds:[1.65,2.20], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/150px-Real_Madrid_CF.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/1/1e/Olympiacos_BC_logo.svg/150px-Olympiacos_BC_logo.svg.png"]},
-
-  // --- ESPORTS (LIVE) ---
   {id:6,sport:"esports",league:"CS2 Major",home:"Natus Vincere",away:"FaZe Clan",hs:1,as:0,min:22,live:true,odds:[1.85,1.95], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/2/23/Natus_Vincere_logo.svg/150px-Natus_Vincere_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3e/FaZe_Clan_logo.svg/150px-FaZe_Clan_logo.svg.png"]},
   {id:7,sport:"esports",league:"Valorant Champions",home:"Sentinels",away:"Fnatic",hs:0,as:1,min:35,live:true,odds:[2.20,1.65], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/Sentinels_logo.svg/150px-Sentinels_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/1/1e/Fnatic_logo.svg/150px-Fnatic_logo.svg.png"]},
-
-  // --- TENNIS (LIVE) ---
   {id:8,sport:"tennis",league:"ATP Finals",home:"C. Alcaraz",away:"J. Sinner",hs:1,as:1,min:3,live:true,odds:[1.70,2.10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Carlos_Alcaraz_2022.jpg/120px-Carlos_Alcaraz_2022.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Jannik_Sinner_2023.jpg/120px-Jannik_Sinner_2023.jpg"]},
-
-  // --- MMA (LIVE) ---
   {id:9,sport:"mma",league:"UFC 300",home:"A. Pereira",away:"I. Adesanya",hs:0,as:0,min:2,live:true,odds:[1.90,1.90], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Alex_Pereira_2023.png/120px-Alex_Pereira_2023.png","https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Israel_Adesanya_2021.png/120px-Israel_Adesanya_2021.png"]},
-
-  // --- FOOTBALL (UPCOMING) ---
   {id:10,sport:"football",league:"Premier League",home:"Man City",away:"Liverpool",hs:0,as:0,min:-90,live:false,odds:[1.85,3.80,4.00],timeStr:"Today 22:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/150px-Manchester_City_FC_badge.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/150px-Liverpool_FC.svg.png"]},
   {id:11,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Tomorrow 21:30", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/150px-FC_Barcelona_%28crest%29.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_Madrid_2017_logo.svg/150px-Atletico_Madrid_2017_logo.svg.png"]},
-  
-  // --- BASKETBALL (UPCOMING) ---
   {id:12,sport:"basketball",league:"NBA",home:"Warriors",away:"Suns",hs:0,as:0,min:-300,live:false,odds:[1.90,1.90],timeStr:"Tomorrow 02:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/0/01/Golden_State_Warriors_logo.svg/150px-Golden_State_Warriors_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Phoenix_Suns_logo.svg/150px-Phoenix_Suns_logo.svg.png"]},
-
-  // --- ESPORTS (UPCOMING) ---
   {id:13,sport:"esports",league:"LoL Worlds",home:"T1",away:"Gen.G",hs:0,as:0,min:-1440,live:false,odds:[1.75,2.05],timeStr:"Tomorrow 15:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/T1_Logo.svg/150px-T1_Logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Gen.G_Logo.svg/150px-Gen.G_Logo.svg.png"]},
   {id:14,sport:"esports",league:"CS2 Major",home:"G2 Esports",away:"Vitality",hs:0,as:0,min:-400,live:false,odds:[2.10,1.70],timeStr:"Today 18:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/G2_Esports_logo.svg/150px-G2_Esports_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/2/21/Team_Vitality_logo.svg/150px-Team_Vitality_logo.svg.png"]}
 ];
@@ -112,8 +97,13 @@ var S = {
 };
 
 /* =========================================================
-   HELPERS
+   HELPERS & NAVIGATION
    ========================================================= */
+function go(path) {
+  location.hash = "#/" + path;
+  norm();
+  render();
+}
 function byId(id){for(var i=0;i<S.matches.length;i++)if(S.matches[i].id===id)return S.matches[i];return null}
 function live(){return S.matches.filter(function(m){return m.live})}
 function upcoming(){return S.matches.filter(function(m){return !m.live})}
@@ -150,7 +140,7 @@ function placeBet(){
     S.bets.unshift({id:Date.now()+Math.random(),lbl:s.lbl,pick:s.pick,mkt:s.mkt,od:s.od,st:S.stake,state:"open",tm:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})})
   });
   S.balance-=S.stake*S.slip.length;
-  S.slip=[];window.location.hash="#/bets";toast("Bet placed successfully",true);
+  S.slip=[];go("bets");toast("Bet placed successfully",true);
 }
 
 /* =========================================================
@@ -182,7 +172,8 @@ function matchRow(m){
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
   
-  var h='<a href="#/match/'+m.id+'" class="match-row fade-in">';
+  // DİKKAT: window.location.hash yerine doğrudan go() fonksiyonu çağrılıyor.
+  var h='<div class="match-row fade-in" onclick="go(\'match/'+m.id+'\')">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
   h+='<span style="color:'+(m.live?"#ff4444":"#8b9eb0")+';font-weight:700">'+clock(m)+'</span></div><div style="color:#7a8f9e;font-weight:600">'+m.league+'</div></div>';
@@ -196,7 +187,7 @@ function matchRow(m){
   labels.forEach(function(l){h+='<span>'+l+'</span>'});
   h+='</div><div class="grid '+cols+' gap-1">';
   for(var i=0;i<(three?3:2);i++)h+='<div>'+oddsBtn(m,"Match Result",picks[i],m.odds[i])+'</div>';
-  h+='</div></div></div></a>';
+  h+='</div></div></div></div>';
   return h;
 }
 function leagueBlock(g){
@@ -207,7 +198,7 @@ function searchHits(){
   var out="";
   S.matches.forEach(function(m){
     if((m.home+" "+m.away+" "+m.league).toLowerCase().indexOf(q)>=0){
-      out+='<a href="#/match/'+m.id+'" style="display:block;padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36;text-decoration:none;color:inherit">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></a>';
+      out+='<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36" onclick="go(\'match/'+m.id+'\')">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></div>';
     }
   });
   return out||'<div style="padding:20px;text-align:center;color:#7a8f9e;font-size:13px">No results</div>';
@@ -268,10 +259,10 @@ function pageFootball(){
   return h;
 }
 function pageMatch(){
-  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <a href="#/home" style="color:#00e5ff">Go back</a></div>';
+  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <button onclick="go(\'home\')" style="color:#00e5ff;background:none;border:none;cursor:pointer">Go back</button></div>';
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
-  var h='<a href="#/home" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0;text-decoration:none">← Back to Matches</a>';
+  var h='<button onclick="go(\'home\')" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0">← Back to Matches</button>';
   
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
   h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home, logoH).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+'</div></div>';
@@ -391,9 +382,9 @@ function shell(html){
   var h='';
   h+='<header style="background:#0b141c;border-bottom:1px solid #1c2a36;position:sticky;top:0;z-index:30;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px">';
   h+='<button class="md:hidden" style="background:none;border:none;color:#7a8f9e;font-size:20px;cursor:pointer;padding:0" onclick="document.getElementById(\'drawer\').classList.toggle(\'open\')">☰</button>';
-  h+='<a href="#/home" class="logo-font" style="font-size:22px;font-weight:900;text-decoration:none;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></a>';
+  h+='<div onclick="go(\'home\')" class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></div>';
   h+='<nav class="hidden md:flex" style="gap:2px;margin-left:20px">';
-  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px">'+n[1]+'</a>'});
+  NAV.forEach(function(n){h+='<div onclick="go(\''+n[0]+'\')" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px;cursor:pointer">'+n[1]+'</div>'});
   h+='</nav><div style="flex:1"></div>';
   h+='<div class="balance-pill hidden sm:flex"><span style="color:#7a8f9e;font-size:10px;font-weight:700">Balance</span><span class="amt">'+fmt(S.balance)+'</span><span style="color:#7a8f9e;font-size:9px">USDT</span></div>';
   h+='<button style="background:#192833;border:1px solid #1c2a36;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span style="color:#00e5ff">●</span>Demo</button>';
@@ -401,16 +392,16 @@ function shell(html){
   
   h+='<div style="max-width:1280px;margin:0 auto;display:flex">';
   h+='<aside id="drawer" class="hidden md:block" style="width:200px;border-right:1px solid #1c2a36;min-height:calc(100vh - 56px);padding:16px 10px;flex-shrink:0">';
-  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
+  NAV.forEach(function(n){h+='<div onclick="go(\''+n[0]+'\')" class="nav '+(S.route===n[0]?"on":"")+'" style="cursor:pointer"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></div>'});
   h+='<div style="font-size:9px;font-weight:800;color:#555;padding:20px 14px 6px;letter-spacing:.1em">SPORTS</div>';
   var sportsList=[...new Set(S.matches.map(function(m){return m.sport}))];
   sportsList.forEach(function(sp){
     var cnt=S.matches.filter(function(m){return m.sport===sp&&m.live}).length;
     var icon = sp==="football"?"⚽":sp==="basketball"?"🏀":sp==="esports"?"🎮":sp==="tennis"?"🎾":"🥊";
     var label = sp==="football"?"Football":sp==="basketball"?"Basketball":sp==="esports"?"Esports":sp[0].toUpperCase()+sp.slice(1);
-    h+='<a href="#/live" class="nav" onclick="S.filter=\''+sp+'\'"><span style="width:18px;text-align:center">'+icon+'</span><span style="flex:1">'+label+'</span>';
+    h+='<div onclick="S.filter=\''+sp+'\';go(\'live\')" class="nav" style="cursor:pointer"><span style="width:18px;text-align:center">'+icon+'</span><span style="flex:1">'+label+'</span>';
     if(cnt)h+='<span style="font-size:9px;background:rgba(255,68,68,0.15);color:#ff8a80;padding:2px 6px;border-radius:4px;font-weight:800">'+cnt+'</span>';
-    h+='</a>';
+    h+='</div>';
   });
   h+='<div style="margin-top:28px;padding:12px;background:#121c24;border-radius:8px;border:1px solid #1c2a36"><div style="font-size:9px;color:#555;line-height:1.6">18+ only. Demo data. No real money. Play responsibly.</div></div>';
   h+='</aside>';
@@ -425,12 +416,12 @@ function shell(html){
   h+='</div>';
 
   if(S.slip.length&&S.route!=="bets"){
-    h+='<a href="#/bets" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);text-decoration:none">';
+    h+='<div onclick="go(\'bets\')" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);">';
     h+='<div><div style="font-size:10px;color:#7a8f9e;margin-bottom:2px;font-weight:600">Slip · '+S.slip.length+' selections</div><div style="font-weight:900;color:#00e5ff;font-size:14px;font-variant-numeric:tabular-nums">'+fmt(potential())+' USDT</div></div>';
-    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open Slip →</button></a>';
+    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open Slip →</button></div>';
   }else if(!S.slip.length){
     h+='<div class="mobile-tabbar md:hidden">';
-    NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="mobile-tab '+(S.route===n[0]?"on":"")+'"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
+    NAV.forEach(function(n){h+='<div onclick="go(\''+n[0]+'\')" class="mobile-tab '+(S.route===n[0]?"on":"")+'" style="cursor:pointer"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></div>'});
     h+='</div>';
   }
 
