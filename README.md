@@ -3,7 +3,7 @@
 A front-end-only sportsbook prototype built for the Housebets Challenge. Mobile-first (390px) and desktop-ready (1440px), with a fully working bet slip, live match simulation, and team following.
 
 ## 🚀 Live Demo
-**[https://esduezz.github.io/Housebets/](https://esduezz.github.io/Housebets/)** 
+**[https://esduez.github.io/Housebets---prototype/](https://esduez.github.io/Housebets---prototype/)** 
 ## 📦 Tech Stack
 - HTML5 / Vanilla JS / CSS3 (Single-file architecture)
 - Tailwind CSS (CDN)
