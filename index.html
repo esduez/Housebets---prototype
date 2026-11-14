@@ -75,21 +75,11 @@ button{font-family:inherit;cursor:pointer}
 .quick-btn.on{background:var(--accent);color:#000;border-color:var(--accent)}
 .follow-star{cursor:pointer;font-size:14px;color:#555;margin-left:4px;transition:color .2s}
 .follow-star.active{color:#ffaa00;}
-#error-log { display: none; position: fixed; top: 0; left: 0; right: 0; background: red; color: white; padding: 10px; font-family: monospace; font-size: 12px; z-index: 9999; text-align: center; }
 </style>
 </head>
 <body>
-<div id="error-log"></div>
 <div id="app"></div>
 <script>
-// Hata Yakalayıcı (Eğer bir JS hatası varsa ekranda gösterir)
-window.onerror = function(msg, url, line) {
-  var el = document.getElementById('error-log');
-  el.style.display = 'block';
-  el.innerHTML = "SİSTEM HATASI: " + msg + "<br>Satır: " + line;
-  return false;
-};
-
 /* =========================================================
    MOCK DATA
    ========================================================= */
@@ -117,7 +107,8 @@ var S = {
   ],
   follows:["Arsenal","Premier League"],
   filter:"all", 
-  marketTab:"Markets", matchTab:"Markets", betsTab:"open",
+  marketTab:"Popular", // DÜZELTİLDİ: Başlangıç sekmesi "Popular" yapıldı
+  matchTab:"Markets", betsTab:"open",
   search:"", toast:null, susp:{}, balance:1250.00
 };
 
@@ -214,9 +205,10 @@ function oddsBtn(m,mkt,pick,od,label){
   return '<button class="'+cls+'" onclick="event.preventDefault();event.stopPropagation();add(byId('+m.id+'),\''+mkt+'\',\''+pick+'\','+od+')">'+fmt(od)+'</button>';
 }
 
+// HATA ÇÖZÜMÜ: parentNode kontrolü eklendi (Sayfa yenilenirken logoların çökmesini engeller)
 function avatar(name, logoUrl){
   if(logoUrl) {
-    return '<div style="width:28px;height:28px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:1px solid rgba(255,255,255,0.1)"><img src="'+logoUrl+'" style="width:80%;height:80%;object-fit:contain" onerror="this.parentNode.innerHTML=\''+initials(name)+'\';this.parentNode.style.background=\''+teamColor(name)+'\';this.parentNode.style.color=\'#fff\';this.parentNode.style.fontSize=\'11px\';this.parentNode.style.fontWeight=\'800\'"></div>';
+    return '<div style="width:28px;height:28px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:1px solid rgba(255,255,255,0.1)"><img src="'+logoUrl+'" style="width:80%;height:80%;object-fit:contain" onerror="if(this.parentNode){this.parentNode.innerHTML=\''+initials(name)+'\';this.parentNode.style.background=\''+teamColor(name)+'\';this.parentNode.style.color=\'#fff\';this.parentNode.style.fontSize=\'11px\';this.parentNode.style.fontWeight=\'800\';}"></div>';
   }
   return '<div style="width:28px;height:28px;border-radius:50%;background:'+teamColor(name)+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;border:1px solid rgba(255,255,255,0.08)">'+initials(name)+'</div>';
 }
@@ -232,7 +224,6 @@ function matchRow(m){
   var isHomeFav = S.follows.includes(m.home);
   var isAwayFav = S.follows.includes(m.away);
 
-  // Doğrudan JavaScript fonksiyonu çağırıyoruz. Link yok.
   var h='<div class="match-row fade-in" onclick="openMatch('+m.id+')">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
@@ -275,7 +266,7 @@ function searchHits(){
 
 function pageHome(){
   var h='<div style="position:relative;margin-bottom:16px">';
-  h+='<input value="'+S.search+'" oninput="S.search=this.value;document.getElementById(\'sr\').innerHTML=searchHits();document.getElementById(\'sr\').style.display=this.value?\'block\':\'none\'" placeholder="Search teams, leagues, or matches..." style="width:100%;background:#121c24;border:1px solid #1c2a36;border-radius:10px;padding:11px 14px 11px 38px;font-size:13px;color:#fff;outline:none" onfocus="this.style.borderColor=\'#00e5ff\'" onblur="this.style.borderColor=\'#1c2a36\'">';
+  h+='<input value="'+S.search+'" oninput="S.search=this.value;var sr=document.getElementById(\'sr\'); if(sr){sr.innerHTML=searchHits();sr.style.display=this.value?\'block\':\'none\';}" placeholder="Search teams, leagues, or matches..." style="width:100%;background:#121c24;border:1px solid #1c2a36;border-radius:10px;padding:11px 14px 11px 38px;font-size:13px;color:#fff;outline:none" onfocus="this.style.borderColor=\'#00e5ff\'" onblur="this.style.borderColor=\'#1c2a36\'">';
   h+='<span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#7a8f9e;font-size:14px">🔍</span>';
   h+='<div id="sr" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:6px;background:#121c24;border:1px solid #1c2a36;border-radius:10px;max-height:280px;overflow:auto;z-index:20;box-shadow:0 16px 40px rgba(0,0,0,0.8)">'+searchHits()+'</div></div>';
   
@@ -343,12 +334,12 @@ function pageMatch(){
   h+='</div>';
 
   if(S.matchTab === "Markets"){
-    var tabs=["Popular","Goals","Halves","Handicaps","Goalscorers"];
+    var tabs=["Popular","Goals","Halves","Handicaps","Goalscorers","Corners & cards"];
     h+='<div class="flex gap-1.5 overflow-x-auto pb-3" style="scrollbar-width:none">';
     tabs.forEach(function(t){h+='<button class="pill '+(S.marketTab===t?"on":"")+'" onclick="S.marketTab=\''+t+'\';render()">'+t+'</button>'});
     h+='</div>';
 
-    var mk={};
+    var mk=[];
     if(S.marketTab==="Popular"){
       mk=[["Match Result",[m.home,"Draw",m.away],m.odds],["Both Teams to Score",["Yes","No"],[1.72,2.05]],["Total Goals 2.5",["Over","Under"],[1.88,1.92]]];
     } else if(S.marketTab==="Goals"){
@@ -359,6 +350,8 @@ function pageMatch(){
       mk=[[m.home+" -1",[m.home,m.away],[1.95,1.85]],[m.away+" +1",[m.home,m.away],[1.70,2.10]]];
     } else if(S.marketTab==="Goalscorers"){
       mk=[["Saka Anytime",["Yes","No"],[2.30,1.55]],["Havertz Anytime",["Yes","No"],[2.60,1.45]]];
+    } else if(S.marketTab==="Corners & cards"){
+      mk=[["Total Corners 9.5",["Over","Under"],[1.85,1.90]],["Home Most Corners",["Yes","No"],[1.75,2.00]],["Card in Match",["Yes","No"],[1.40,2.70]]];
     }
 
     mk.forEach(function(g){
