@@ -111,9 +111,6 @@ var S = {
   search:"", toast:null, susp:{}, balance:1250.00
 };
 
-/* =========================================================
-   STATS GENERATOR
-   ========================================================= */
 function getTeamStats(name) {
   var seed = 0;
   for(var i=0; i<name.length; i++) seed += name.charCodeAt(i);
@@ -141,14 +138,20 @@ function getTeamStats(name) {
 }
 
 /* =========================================================
-   CORE & NAVIGATION (Garantili Geçiş)
+   CORE ROUTING (URL Hash Yöntemi)
    ========================================================= */
-window.nav = function(route, id) {
-  S.route = route;
-  if (id !== undefined) S.mid = id;
+function navTo(hashStr) {
+  window.location.hash = hashStr;
+  // Hashchange event tetiklenip render olacak
+}
+
+window.addEventListener("hashchange", function() {
+  var h = location.hash.replace("#/", "").split("/");
+  S.route = h[0] || "home";
+  if (h[0] === "match" && h[1]) S.mid = parseInt(h[1]);
   window.scrollTo(0, 0);
   render();
-};
+});
 
 window.toggleFollow = function(name) {
   var idx = S.follows.indexOf(name);
@@ -197,7 +200,7 @@ function placeBet(){
     });
   });
   S.balance-=S.stake*S.slip.length;
-  S.slip=[];nav('bets');toast("Bet placed successfully",true);
+  S.slip=[];navTo("bets");toast("Bet placed successfully",true);
 }
 
 /* =========================================================
@@ -232,22 +235,23 @@ function matchRow(m){
   var isHomeFav = S.follows.includes(m.home);
   var isAwayFav = S.follows.includes(m.away);
 
-  var h='<div class="match-row fade-in" onclick="nav(\'match\', '+m.id+')">';
+  // Direkt href ile yönlendirme
+  var h='<a href="#/match/'+m.id+'" class="match-row fade-in" style="text-decoration:none;color:inherit;display:block;">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
   h+='<span style="color:'+(m.live?"#ff4444":"#8b9eb0")+';font-weight:700">'+clock(m)+'</span></div><div style="color:#7a8f9e;font-weight:600">'+m.league+'</div></div>';
   
   h+='<div class="flex items-center gap-3"><div class="flex-1 min-w-0 space-y-1.5">';
   
-  // Ev Sahibi
   h+='<div class="flex items-center gap-2">'+avatar(m.home, logoH);
-  h+='<span class="text-[13px] font-semibold truncate flex-1" onclick="event.stopPropagation(); toggleFollow(\''+m.home+'\')">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'">'+(isHomeFav?'★':'☆')+'</span></span>';
-  h+=(m.live?'<span style="color:#00e5ff;font-weight:800">'+m.hs+'</span>':'')+'</div>';
+  h+='<span class="text-[13px] font-semibold truncate flex-1">'+m.home+'</span>';
+  h+='<span class="follow-star '+(isHomeFav?'active':'')+'" onclick="event.preventDefault();event.stopPropagation(); toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span>';
+  h+=(m.live?'<span style="color:#00e5ff;font-weight:800;margin-left:4px">'+m.hs+'</span>':'')+'</div>';
   
-  // Deplasman
   h+='<div class="flex items-center gap-2">'+avatar(m.away, logoA);
-  h+='<span class="text-[13px] font-semibold truncate flex-1" onclick="event.stopPropagation(); toggleFollow(\''+m.away+'\')">'+m.away+' <span class="follow-star '+(isAwayFav?'active':'')+'">'+(isAwayFav?'★':'☆')+'</span></span>';
-  h+=(m.live?'<span style="color:#00e5ff;font-weight:800">'+m.as+'</span>':'')+'</div>';
+  h+='<span class="text-[13px] font-semibold truncate flex-1">'+m.away+'</span>';
+  h+='<span class="follow-star '+(isAwayFav?'active':'')+'" onclick="event.preventDefault();event.stopPropagation(); toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span>';
+  h+=(m.live?'<span style="color:#00e5ff;font-weight:800;margin-left:4px">'+m.as+'</span>':'')+'</div>';
   
   h+='</div>';
   
@@ -255,7 +259,7 @@ function matchRow(m){
   labels.forEach(function(l){h+='<span>'+l+'</span>'});
   h+='</div><div class="grid '+cols+' gap-1">';
   for(var i=0;i<(three?3:2);i++)h+='<div>'+oddsBtn(m,"Match Result",picks[i],m.odds[i])+'</div>';
-  h+='</div></div></div></div>';
+  h+='</div></div></div></a>';
   return h;
 }
 function leagueBlock(g){
@@ -266,7 +270,7 @@ function searchHits(){
   var out="";
   S.matches.forEach(function(m){
     if((m.home+" "+m.away+" "+m.league).toLowerCase().indexOf(q)>=0){
-      out+='<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36" onclick="nav(\'match\', '+m.id+')">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></div>';
+      out+='<a href="#/match/'+m.id+'" style="display:block;padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36;text-decoration:none;color:inherit">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></a>';
     }
   });
   return out||'<div style="padding:20px;text-align:center;color:#7a8f9e;font-size:13px">No results</div>';
@@ -322,7 +326,7 @@ function pageLive(){
   return h;
 }
 function pageMatch(){
-  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <button onclick="nav(\'home\')" style="color:#00e5ff;background:none;border:none;cursor:pointer">Go back</button></div>';
+  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <a href="#/home" style="color:#00e5ff">Go back</a></div>';
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
   
@@ -332,7 +336,7 @@ function pageMatch(){
   var isHomeFav = S.follows.includes(m.home);
   var isAwayFav = S.follows.includes(m.away);
 
-  var h='<button onclick="nav(\'home\')" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0">← Back to Matches</button>';
+  var h='<a href="#/home" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0;text-decoration:none">← Back to Matches</a>';
   
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
   h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home, logoH).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'" onclick="toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span></div></div>';
@@ -422,9 +426,6 @@ function pageMatch(){
   return h;
 }
 
-/* =========================================================
-   BET SLIP PAGE
-   ========================================================= */
 function slipLine(s){
   var k=slipKey(s);var badge="";
   if(s.status==="susp")badge='<span class="badge" style="background:rgba(255,68,68,0.15);color:#ff8a80">SUSPENDED</span>';
@@ -485,18 +486,15 @@ function pageBets(){
   return h+'</div></div>';
 }
 
-/* =========================================================
-   SHELL
-   ========================================================= */
 var NAV=[["home","Sports","🏠"],["live","Live","🔴"],["football","Football","⚽"],["bets","My Bets","📋"]];
 
 function shell(html){
   var h='';
   h+='<header style="background:#0b141c;border-bottom:1px solid #1c2a36;position:sticky;top:0;z-index:30;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px">';
   h+='<button class="md:hidden" style="background:none;border:none;color:#7a8f9e;font-size:20px;cursor:pointer;padding:0" onclick="document.getElementById(\'drawer\').classList.toggle(\'open\')">☰</button>';
-  h+='<div onclick="nav(\'home\')" class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></div>';
+  h+='<a href="#/home" class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer;text-decoration:none;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></a>';
   h+='<nav class="hidden md:flex" style="gap:2px;margin-left:20px">';
-  NAV.forEach(function(n){h+='<div onclick="nav(\''+n[0]+'\')" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px;cursor:pointer">'+n[1]+'</div>'});
+  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px;cursor:pointer;text-decoration:none;">'+n[1]+'</a>'});
   h+='</nav><div style="flex:1"></div>';
   h+='<div class="balance-pill hidden sm:flex"><span style="color:#7a8f9e;font-size:10px;font-weight:700">Balance</span><span class="amt">'+fmt(S.balance)+'</span><span style="color:#7a8f9e;font-size:9px">USDT</span></div>';
   h+='<button style="background:#192833;border:1px solid #1c2a36;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span style="color:#00e5ff">●</span>Demo</button>';
@@ -504,16 +502,16 @@ function shell(html){
   
   h+='<div style="max-width:1280px;margin:0 auto;display:flex">';
   h+='<aside id="drawer" class="hidden md:block" style="width:200px;border-right:1px solid #1c2a36;min-height:calc(100vh - 56px);padding:16px 10px;flex-shrink:0">';
-  NAV.forEach(function(n){h+='<div onclick="nav(\''+n[0]+'\')" class="nav '+(S.route===n[0]?"on":"")+'" style="cursor:pointer"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></div>'});
+  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'" style="cursor:pointer;text-decoration:none;"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
   h+='<div style="font-size:9px;font-weight:800;color:#555;padding:20px 14px 6px;letter-spacing:.1em">SPORTS</div>';
   var sportsList=[...new Set(S.matches.map(function(m){return m.sport}))];
   sportsList.forEach(function(sp){
     var cnt=S.matches.filter(function(m){return m.sport===sp&&m.live}).length;
     var icon = sp==="football"?"⚽":sp==="basketball"?"🏀":sp==="esports"?"🎮":sp==="tennis"?"🎾":"🥊";
     var label = sp==="football"?"Football":sp==="basketball"?"Basketball":sp==="esports"?"Esports":sp[0].toUpperCase()+sp.slice(1);
-    h+='<div onclick="S.filter=\''+sp+'\';nav(\'live\')" class="nav" style="cursor:pointer"><span style="width:18px;text-align:center">'+icon+'</span><span style="flex:1">'+label+'</span>';
+    h+='<a href="#/live" onclick="S.filter=\''+sp+'\'" class="nav" style="cursor:pointer;text-decoration:none;"><span style="width:18px;text-align:center">'+icon+'</span><span style="flex:1">'+label+'</span>';
     if(cnt)h+='<span style="font-size:9px;background:rgba(255,68,68,0.15);color:#ff8a80;padding:2px 6px;border-radius:4px;font-weight:800">'+cnt+'</span>';
-    h+='</div>';
+    h+='</a>';
   });
   h+='<div style="margin-top:28px;padding:12px;background:#121c24;border-radius:8px;border:1px solid #1c2a36"><div style="font-size:9px;color:#555;line-height:1.6">18+ only. Demo data. No real money. Play responsibly.</div></div>';
   h+='</aside>';
@@ -528,12 +526,12 @@ function shell(html){
   h+='</div>';
 
   if(S.slip.length&&S.route!=="bets"){
-    h+='<div onclick="nav(\'bets\')" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);">';
+    h+='<a href="#/bets" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);text-decoration:none">';
     h+='<div><div style="font-size:10px;color:#7a8f9e;margin-bottom:2px;font-weight:600">Slip · '+S.slip.length+' selections</div><div style="font-weight:900;color:#00e5ff;font-size:14px;font-variant-numeric:tabular-nums">'+fmt(potential())+' USDT</div></div>';
-    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open Slip →</button></div>';
+    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open Slip →</button></a>';
   }else if(!S.slip.length){
     h+='<div class="mobile-tabbar md:hidden">';
-    NAV.forEach(function(n){h+='<div onclick="nav(\''+n[0]+'\')" class="mobile-tab '+(S.route===n[0]?"on":"")+'" style="cursor:pointer"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></div>'});
+    NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="mobile-tab '+(S.route===n[0]?"on":"")+'" style="cursor:pointer;text-decoration:none;"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
     h+='</div>';
   }
 
@@ -542,9 +540,6 @@ function shell(html){
   return h;
 }
 
-/* =========================================================
-   RENDER
-   ========================================================= */
 function render(){
   var html = '';
   if(S.route === 'home') html = pageHome();
@@ -557,9 +552,7 @@ function render(){
   document.getElementById("app").innerHTML = shell(html);
 }
 
-/* =========================================================
-   LIVE SIMULATION
-   ========================================================= */
+/* LIVE SIMULATION */
 setInterval(function(){
   var updated=false;
   S.matches.forEach(function(m){
@@ -599,10 +592,11 @@ setInterval(function(){
   }
 }, 5000);
 
-/* =========================================================
-   INIT
-   ========================================================= */
+/* INIT */
 S.matches = MOCK_MATCHES;
+var initHash = location.hash.replace("#/", "").split("/");
+S.route = initHash[0] || "home";
+if (initHash[0] === "match" && initHash[1]) S.mid = parseInt(initHash[1]);
 render();
 </script>
 </body>
