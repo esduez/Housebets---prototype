@@ -75,11 +75,21 @@ button{font-family:inherit;cursor:pointer}
 .quick-btn.on{background:var(--accent);color:#000;border-color:var(--accent)}
 .follow-star{cursor:pointer;font-size:14px;color:#555;margin-left:4px;transition:color .2s}
 .follow-star.active{color:#ffaa00;}
+#error-log { display: none; position: fixed; top: 0; left: 0; right: 0; background: red; color: white; padding: 10px; font-family: monospace; font-size: 12px; z-index: 9999; text-align: center; }
 </style>
 </head>
 <body>
+<div id="error-log"></div>
 <div id="app"></div>
 <script>
+// Hata Yakalayıcı (Eğer bir JS hatası varsa ekranda gösterir)
+window.onerror = function(msg, url, line) {
+  var el = document.getElementById('error-log');
+  el.style.display = 'block';
+  el.innerHTML = "SİSTEM HATASI: " + msg + "<br>Satır: " + line;
+  return false;
+};
+
 /* =========================================================
    MOCK DATA
    ========================================================= */
@@ -138,20 +148,13 @@ function getTeamStats(name) {
 }
 
 /* =========================================================
-   CORE ROUTING (URL Hash Yöntemi)
+   KESİN ÇÖZÜM: URL YOK, SADECE JAVASCRIPT
    ========================================================= */
-function navTo(hashStr) {
-  window.location.hash = hashStr;
-  // Hashchange event tetiklenip render olacak
-}
-
-window.addEventListener("hashchange", function() {
-  var h = location.hash.replace("#/", "").split("/");
-  S.route = h[0] || "home";
-  if (h[0] === "match" && h[1]) S.mid = parseInt(h[1]);
-  window.scrollTo(0, 0);
-  render();
-});
+window.goHome = function() { S.route = 'home'; window.scrollTo(0,0); render(); };
+window.goLive = function() { S.route = 'live'; window.scrollTo(0,0); render(); };
+window.goFootball = function() { S.route = 'football'; window.scrollTo(0,0); render(); };
+window.goBets = function() { S.route = 'bets'; window.scrollTo(0,0); render(); };
+window.openMatch = function(id) { S.route = 'match'; S.mid = id; window.scrollTo(0,0); render(); };
 
 window.toggleFollow = function(name) {
   var idx = S.follows.indexOf(name);
@@ -173,9 +176,6 @@ function teamColor(name){var h=0;for(var i=0;i<name.length;i++)h=(h*31+name.char
 function initials(name){var p=name.trim().split(" ");return p.length>1?(p[0][0]+p[1][0]).toUpperCase():name.slice(0,2).toUpperCase()}
 function groupByLeague(list){var out=[],seen={};list.forEach(function(m){if(!seen[m.league]){seen[m.league]={league:m.league,ms:[]};out.push(seen[m.league])}seen[m.league].ms.push(m)});return out}
 
-/* =========================================================
-   BET SLIP
-   ========================================================= */
 function add(m,mkt,pick,od){
   var s={mid:m.id,lbl:m.home+" v "+m.away,mkt:mkt,pick:pick,od:od,status:"ok",old:od};
   var k=slipKey(s);var ex=null;
@@ -200,12 +200,9 @@ function placeBet(){
     });
   });
   S.balance-=S.stake*S.slip.length;
-  S.slip=[];navTo("bets");toast("Bet placed successfully",true);
+  S.slip=[];window.goBets();toast("Bet placed successfully",true);
 }
 
-/* =========================================================
-   UI COMPONENTS
-   ========================================================= */
 function oddsBtn(m,mkt,pick,od,label){
   var k=m.id+"|"+mkt+"|"+pick;var sel=null;
   for(var i=0;i<S.slip.length;i++)if(slipKey(S.slip[i])===k)sel=S.slip[i];
@@ -235,8 +232,8 @@ function matchRow(m){
   var isHomeFav = S.follows.includes(m.home);
   var isAwayFav = S.follows.includes(m.away);
 
-  // Direkt href ile yönlendirme
-  var h='<a href="#/match/'+m.id+'" class="match-row fade-in" style="text-decoration:none;color:inherit;display:block;">';
+  // Doğrudan JavaScript fonksiyonu çağırıyoruz. Link yok.
+  var h='<div class="match-row fade-in" onclick="openMatch('+m.id+')">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
   h+='<span style="color:'+(m.live?"#ff4444":"#8b9eb0")+';font-weight:700">'+clock(m)+'</span></div><div style="color:#7a8f9e;font-weight:600">'+m.league+'</div></div>';
@@ -245,12 +242,12 @@ function matchRow(m){
   
   h+='<div class="flex items-center gap-2">'+avatar(m.home, logoH);
   h+='<span class="text-[13px] font-semibold truncate flex-1">'+m.home+'</span>';
-  h+='<span class="follow-star '+(isHomeFav?'active':'')+'" onclick="event.preventDefault();event.stopPropagation(); toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span>';
+  h+='<span class="follow-star '+(isHomeFav?'active':'')+'" onclick="event.stopPropagation(); toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span>';
   h+=(m.live?'<span style="color:#00e5ff;font-weight:800;margin-left:4px">'+m.hs+'</span>':'')+'</div>';
   
   h+='<div class="flex items-center gap-2">'+avatar(m.away, logoA);
   h+='<span class="text-[13px] font-semibold truncate flex-1">'+m.away+'</span>';
-  h+='<span class="follow-star '+(isAwayFav?'active':'')+'" onclick="event.preventDefault();event.stopPropagation(); toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span>';
+  h+='<span class="follow-star '+(isAwayFav?'active':'')+'" onclick="event.stopPropagation(); toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span>';
   h+=(m.live?'<span style="color:#00e5ff;font-weight:800;margin-left:4px">'+m.as+'</span>':'')+'</div>';
   
   h+='</div>';
@@ -259,7 +256,7 @@ function matchRow(m){
   labels.forEach(function(l){h+='<span>'+l+'</span>'});
   h+='</div><div class="grid '+cols+' gap-1">';
   for(var i=0;i<(three?3:2);i++)h+='<div>'+oddsBtn(m,"Match Result",picks[i],m.odds[i])+'</div>';
-  h+='</div></div></div></a>';
+  h+='</div></div></div></div>';
   return h;
 }
 function leagueBlock(g){
@@ -270,15 +267,12 @@ function searchHits(){
   var out="";
   S.matches.forEach(function(m){
     if((m.home+" "+m.away+" "+m.league).toLowerCase().indexOf(q)>=0){
-      out+='<a href="#/match/'+m.id+'" style="display:block;padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36;text-decoration:none;color:inherit">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></a>';
+      out+='<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #1c2a36" onclick="openMatch('+m.id+')">'+m.home+' v '+m.away+' <span style="color:#7a8f9e;font-size:11px">· '+m.league+'</span></div>';
     }
   });
   return out||'<div style="padding:20px;text-align:center;color:#7a8f9e;font-size:13px">No results</div>';
 }
 
-/* =========================================================
-   PAGES
-   ========================================================= */
 function pageHome(){
   var h='<div style="position:relative;margin-bottom:16px">';
   h+='<input value="'+S.search+'" oninput="S.search=this.value;document.getElementById(\'sr\').innerHTML=searchHits();document.getElementById(\'sr\').style.display=this.value?\'block\':\'none\'" placeholder="Search teams, leagues, or matches..." style="width:100%;background:#121c24;border:1px solid #1c2a36;border-radius:10px;padding:11px 14px 11px 38px;font-size:13px;color:#fff;outline:none" onfocus="this.style.borderColor=\'#00e5ff\'" onblur="this.style.borderColor=\'#1c2a36\'">';
@@ -326,7 +320,7 @@ function pageLive(){
   return h;
 }
 function pageMatch(){
-  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <a href="#/home" style="color:#00e5ff">Go back</a></div>';
+  var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <button onclick="goHome()" style="color:#00e5ff;background:none;border:none;cursor:pointer">Go back</button></div>';
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
   
@@ -336,7 +330,7 @@ function pageMatch(){
   var isHomeFav = S.follows.includes(m.home);
   var isAwayFav = S.follows.includes(m.away);
 
-  var h='<a href="#/home" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0;text-decoration:none">← Back to Matches</a>';
+  var h='<button onclick="goHome()" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0">← Back to Matches</button>';
   
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
   h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home, logoH).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'" onclick="toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span></div></div>';
@@ -492,9 +486,12 @@ function shell(html){
   var h='';
   h+='<header style="background:#0b141c;border-bottom:1px solid #1c2a36;position:sticky;top:0;z-index:30;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px">';
   h+='<button class="md:hidden" style="background:none;border:none;color:#7a8f9e;font-size:20px;cursor:pointer;padding:0" onclick="document.getElementById(\'drawer\').classList.toggle(\'open\')">☰</button>';
-  h+='<a href="#/home" class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer;text-decoration:none;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></a>';
+  h+='<div onclick="goHome()" class="logo-font" style="font-size:22px;font-weight:900;cursor:pointer;"><span style="color:#00e5ff">H</span><span style="color:#fff">ousebets</span></div>';
   h+='<nav class="hidden md:flex" style="gap:2px;margin-left:20px">';
-  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px;cursor:pointer;text-decoration:none;">'+n[1]+'</a>'});
+  NAV.forEach(function(n){
+    var fn = n[0]==="home"?"goHome()":n[0]==="live"?"goLive()":n[0]==="football"?"goFootball()":"goBets()";
+    h+='<div onclick="'+fn+'" class="nav '+(S.route===n[0]?"on":"")+'" style="width:auto;padding:7px 14px;cursor:pointer;">'+n[1]+'</div>'
+  });
   h+='</nav><div style="flex:1"></div>';
   h+='<div class="balance-pill hidden sm:flex"><span style="color:#7a8f9e;font-size:10px;font-weight:700">Balance</span><span class="amt">'+fmt(S.balance)+'</span><span style="color:#7a8f9e;font-size:9px">USDT</span></div>';
   h+='<button style="background:#192833;border:1px solid #1c2a36;border-radius:999px;padding:6px 14px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span style="color:#00e5ff">●</span>Demo</button>';
@@ -502,16 +499,19 @@ function shell(html){
   
   h+='<div style="max-width:1280px;margin:0 auto;display:flex">';
   h+='<aside id="drawer" class="hidden md:block" style="width:200px;border-right:1px solid #1c2a36;min-height:calc(100vh - 56px);padding:16px 10px;flex-shrink:0">';
-  NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="nav '+(S.route===n[0]?"on":"")+'" style="cursor:pointer;text-decoration:none;"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
+  NAV.forEach(function(n){
+    var fn = n[0]==="home"?"goHome()":n[0]==="live"?"goLive()":n[0]==="football"?"goFootball()":"goBets()";
+    h+='<div onclick="'+fn+'" class="nav '+(S.route===n[0]?"on":"")+'" style="cursor:pointer;"><span style="width:18px;text-align:center">'+n[2]+'</span><span>'+n[1]+'</span></div>'
+  });
   h+='<div style="font-size:9px;font-weight:800;color:#555;padding:20px 14px 6px;letter-spacing:.1em">SPORTS</div>';
   var sportsList=[...new Set(S.matches.map(function(m){return m.sport}))];
   sportsList.forEach(function(sp){
     var cnt=S.matches.filter(function(m){return m.sport===sp&&m.live}).length;
     var icon = sp==="football"?"⚽":sp==="basketball"?"🏀":sp==="esports"?"🎮":sp==="tennis"?"🎾":"🥊";
     var label = sp==="football"?"Football":sp==="basketball"?"Basketball":sp==="esports"?"Esports":sp[0].toUpperCase()+sp.slice(1);
-    h+='<a href="#/live" onclick="S.filter=\''+sp+'\'" class="nav" style="cursor:pointer;text-decoration:none;"><span style="width:18px;text-align:center">'+icon+'</span><span style="flex:1">'+label+'</span>';
+    h+='<div onclick="S.filter=\''+sp+'\';goLive()" class="nav" style="cursor:pointer;"><span style="width:18px;text-align:center">'+icon+'</span><span style="flex:1">'+label+'</span>';
     if(cnt)h+='<span style="font-size:9px;background:rgba(255,68,68,0.15);color:#ff8a80;padding:2px 6px;border-radius:4px;font-weight:800">'+cnt+'</span>';
-    h+='</a>';
+    h+='</div>';
   });
   h+='<div style="margin-top:28px;padding:12px;background:#121c24;border-radius:8px;border:1px solid #1c2a36"><div style="font-size:9px;color:#555;line-height:1.6">18+ only. Demo data. No real money. Play responsibly.</div></div>';
   h+='</aside>';
@@ -526,12 +526,15 @@ function shell(html){
   h+='</div>';
 
   if(S.slip.length&&S.route!=="bets"){
-    h+='<a href="#/bets" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);text-decoration:none">';
+    h+='<div onclick="goBets()" class="md:hidden slide-up" style="position:fixed;bottom:0;left:0;right:0;background:#121c24;border-top:2px solid #00e5ff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:40;cursor:pointer;box-shadow:0 -8px 24px rgba(0,0,0,0.6);">';
     h+='<div><div style="font-size:10px;color:#7a8f9e;margin-bottom:2px;font-weight:600">Slip · '+S.slip.length+' selections</div><div style="font-weight:900;color:#00e5ff;font-size:14px;font-variant-numeric:tabular-nums">'+fmt(potential())+' USDT</div></div>';
-    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open Slip →</button></a>';
+    h+='<button style="background:#00e5ff;color:#000;font-weight:900;border:none;padding:10px 20px;border-radius:8px;font-size:13px">Open Slip →</button></div>';
   }else if(!S.slip.length){
     h+='<div class="mobile-tabbar md:hidden">';
-    NAV.forEach(function(n){h+='<a href="#/'+n[0]+'" class="mobile-tab '+(S.route===n[0]?"on":"")+'" style="cursor:pointer;text-decoration:none;"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></a>'});
+    NAV.forEach(function(n){
+      var fn = n[0]==="home"?"goHome()":n[0]==="live"?"goLive()":n[0]==="football"?"goFootball()":"goBets()";
+      h+='<div onclick="'+fn+'" class="mobile-tab '+(S.route===n[0]?"on":"")+'" style="cursor:pointer;"><span style="font-size:18px">'+n[2]+'</span><span>'+n[1]+'</span></div>'
+    });
     h+='</div>';
   }
 
@@ -552,7 +555,6 @@ function render(){
   document.getElementById("app").innerHTML = shell(html);
 }
 
-/* LIVE SIMULATION */
 setInterval(function(){
   var updated=false;
   S.matches.forEach(function(m){
@@ -592,11 +594,7 @@ setInterval(function(){
   }
 }, 5000);
 
-/* INIT */
 S.matches = MOCK_MATCHES;
-var initHash = location.hash.replace("#/", "").split("/");
-S.route = initHash[0] || "home";
-if (initHash[0] === "match" && initHash[1]) S.mid = parseInt(initHash[1]);
 render();
 </script>
 </body>
