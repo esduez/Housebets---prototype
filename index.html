@@ -81,20 +81,20 @@ button{font-family:inherit;cursor:pointer}
 <div id="app"></div>
 <script>
 /* =========================================================
-   MOCK DATA
+   MOCK DATA (Logolar kaldırıldı, baş harf fallback'i kullanılacak)
    ========================================================= */
 var MOCK_MATCHES = [
-  {id:1,sport:"football",league:"Premier League",home:"Arsenal",away:"Brighton",hs:2,as:1,min:67,live:true,odds:[2.10,3.40,3.60],xg:[2.1,0.9],poss:[58,42],shots:[12,5], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/150px-Arsenal_FC.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Brighton_%26_Hove_Albion_logo.svg/150px-Brighton_%26_Hove_Albion_logo.svg.png"]},
-  {id:2,sport:"football",league:"LaLiga",home:"Real Madrid",away:"Sevilla",hs:1,as:0,min:54,live:true,odds:[1.35,5.00,8.50],xg:[1.8,0.3],poss:[62,38],shots:[10,3], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/150px-Real_Madrid_CF.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Sevilla_FC_logo.svg/150px-Sevilla_FC_logo.svg.png"]},
-  {id:3,sport:"football",league:"Serie A",home:"Inter",away:"Roma",hs:2,as:2,min:78,live:true,odds:[1.90,3.60,3.90],xg:[2.0,1.9],poss:[51,49],shots:[11,10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/150px-FC_Internazionale_Milano_2021.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/AS_Roma_logo_%282017%29.svg/150px-AS_Roma_logo_%282017%29.svg.png"]},
-  {id:4,sport:"basketball",league:"NBA",home:"Lakers",away:"Celtics",hs:78,as:82,min:38,live:true,odds:[2.05,1.78],poss:[50,50],shots:[0,0], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/150px-Los_Angeles_Lakers_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Boston_Celtics.svg/150px-Boston_Celtics.svg.png"]},
-  {id:5,sport:"esports",league:"CS2 Major",home:"Natus Vincere",away:"FaZe Clan",hs:1,as:0,min:22,live:true,odds:[1.85,1.95], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/2/23/Natus_Vincere_logo.svg/150px-Natus_Vincere_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3e/FaZe_Clan_logo.svg/150px-FaZe_Clan_logo.svg.png"]},
-  {id:6,sport:"tennis",league:"ATP Finals",home:"C. Alcaraz",away:"J. Sinner",hs:1,as:1,min:3,live:true,odds:[1.70,2.10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Carlos_Alcaraz_2022.jpg/120px-Carlos_Alcaraz_2022.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Jannik_Sinner_2023.jpg/120px-Jannik_Sinner_2023.jpg"]},
-  {id:10,sport:"football",league:"Premier League",home:"Man City",away:"Liverpool",hs:0,as:0,min:-90,live:false,odds:[1.85,3.80,4.00],timeStr:"Today 22:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/150px-Manchester_City_FC_badge.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/150px-Liverpool_FC.svg.png"]},
-  {id:11,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Tomorrow 21:30", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/150px-FC_Barcelona_%28crest%29.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_Madrid_2017_logo.svg/150px-Atletico_Madrid_2017_logo.svg.png"]},
-  {id:12,sport:"football",league:"Bundesliga",home:"Bayern",away:"Dortmund",hs:0,as:0,min:-2880,live:false,odds:[1.70,4.20,4.50],timeStr:"Sat 18:30", logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/150px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png","https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/150px-Borussia_Dortmund_logo.svg.png"]},
-  {id:14,sport:"basketball",league:"NBA",home:"Warriors",away:"Suns",hs:0,as:0,min:-300,live:false,odds:[1.90,1.90],timeStr:"Tomorrow 02:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/0/01/Golden_State_Warriors_logo.svg/150px-Golden_State_Warriors_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Phoenix_Suns_logo.svg/150px-Phoenix_Suns_logo.svg.png"]},
-  {id:16,sport:"esports",league:"LoL Worlds",home:"T1",away:"Gen.G",hs:0,as:0,min:-1440,live:false,odds:[1.75,2.05],timeStr:"Tomorrow 15:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/T1_Logo.svg/150px-T1_Logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Gen.G_Logo.svg/150px-Gen.G_Logo.svg.png"]}
+  {id:1,sport:"football",league:"Premier League",home:"Arsenal",away:"Brighton",hs:2,as:1,min:67,live:true,odds:[2.10,3.40,3.60],xg:[2.1,0.9],poss:[58,42],shots:[12,5]},
+  {id:2,sport:"football",league:"LaLiga",home:"Real Madrid",away:"Sevilla",hs:1,as:0,min:54,live:true,odds:[1.35,5.00,8.50],xg:[1.8,0.3],poss:[62,38],shots:[10,3]},
+  {id:3,sport:"football",league:"Serie A",home:"Inter",away:"Roma",hs:2,as:2,min:78,live:true,odds:[1.90,3.60,3.90],xg:[2.0,1.9],poss:[51,49],shots:[11,10]},
+  {id:4,sport:"basketball",league:"NBA",home:"Lakers",away:"Celtics",hs:78,as:82,min:38,live:true,odds:[2.05,1.78],poss:[50,50],shots:[0,0]},
+  {id:5,sport:"esports",league:"CS2 Major",home:"Natus Vincere",away:"FaZe Clan",hs:1,as:0,min:22,live:true,odds:[1.85,1.95]},
+  {id:6,sport:"tennis",league:"ATP Finals",home:"C. Alcaraz",away:"J. Sinner",hs:1,as:1,min:3,live:true,odds:[1.70,2.10]},
+  {id:10,sport:"football",league:"Premier League",home:"Man City",away:"Liverpool",hs:0,as:0,min:-90,live:false,odds:[1.85,3.80,4.00],timeStr:"Today 22:00"},
+  {id:11,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Tomorrow 21:30"},
+  {id:12,sport:"football",league:"Bundesliga",home:"Bayern",away:"Dortmund",hs:0,as:0,min:-2880,live:false,odds:[1.70,4.20,4.50],timeStr:"Sat 18:30"},
+  {id:14,sport:"basketball",league:"NBA",home:"Warriors",away:"Suns",hs:0,as:0,min:-300,live:false,odds:[1.90,1.90],timeStr:"Tomorrow 02:00"},
+  {id:16,sport:"esports",league:"LoL Worlds",home:"T1",away:"Gen.G",hs:0,as:0,min:-1440,live:false,odds:[1.75,2.05],timeStr:"Tomorrow 15:00"}
 ];
 
 var S = {
@@ -107,7 +107,7 @@ var S = {
   ],
   follows:["Arsenal","Premier League"],
   filter:"all", 
-  marketTab:"Popular", // DÜZELTİLDİ: Başlangıç sekmesi "Popular" yapıldı
+  marketTab:"Popular", // Başlangıç sekmesi düzeltildi
   matchTab:"Markets", betsTab:"open",
   search:"", toast:null, susp:{}, balance:1250.00
 };
@@ -139,7 +139,7 @@ function getTeamStats(name) {
 }
 
 /* =========================================================
-   KESİN ÇÖZÜM: URL YOK, SADECE JAVASCRIPT
+   NAVIGATION
    ========================================================= */
 window.goHome = function() { S.route = 'home'; window.scrollTo(0,0); render(); };
 window.goLive = function() { S.route = 'live'; window.scrollTo(0,0); render(); };
@@ -205,11 +205,8 @@ function oddsBtn(m,mkt,pick,od,label){
   return '<button class="'+cls+'" onclick="event.preventDefault();event.stopPropagation();add(byId('+m.id+'),\''+mkt+'\',\''+pick+'\','+od+')">'+fmt(od)+'</button>';
 }
 
-// HATA ÇÖZÜMÜ: parentNode kontrolü eklendi (Sayfa yenilenirken logoların çökmesini engeller)
-function avatar(name, logoUrl){
-  if(logoUrl) {
-    return '<div style="width:28px;height:28px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:1px solid rgba(255,255,255,0.1)"><img src="'+logoUrl+'" style="width:80%;height:80%;object-fit:contain" onerror="if(this.parentNode){this.parentNode.innerHTML=\''+initials(name)+'\';this.parentNode.style.background=\''+teamColor(name)+'\';this.parentNode.style.color=\'#fff\';this.parentNode.style.fontSize=\'11px\';this.parentNode.style.fontWeight=\'800\';}"></div>';
-  }
+// Sadece baş harflerden oluşan avatar (resim yükleme derdi yok)
+function avatar(name){
   return '<div style="width:28px;height:28px;border-radius:50%;background:'+teamColor(name)+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;border:1px solid rgba(255,255,255,0.08)">'+initials(name)+'</div>';
 }
 
@@ -218,8 +215,6 @@ function matchRow(m){
   var picks=three?[m.home,"draw",m.away]:[m.home,m.away];
   var labels=three?["1","X","2"]:["1","2"];
   var cols=three?"grid-cols-3":"grid-cols-2";
-  var logoH = m.logos ? m.logos[0] : null;
-  var logoA = m.logos ? m.logos[1] : null;
   
   var isHomeFav = S.follows.includes(m.home);
   var isAwayFav = S.follows.includes(m.away);
@@ -231,12 +226,12 @@ function matchRow(m){
   
   h+='<div class="flex items-center gap-3"><div class="flex-1 min-w-0 space-y-1.5">';
   
-  h+='<div class="flex items-center gap-2">'+avatar(m.home, logoH);
+  h+='<div class="flex items-center gap-2">'+avatar(m.home);
   h+='<span class="text-[13px] font-semibold truncate flex-1">'+m.home+'</span>';
   h+='<span class="follow-star '+(isHomeFav?'active':'')+'" onclick="event.stopPropagation(); toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span>';
   h+=(m.live?'<span style="color:#00e5ff;font-weight:800;margin-left:4px">'+m.hs+'</span>':'')+'</div>';
   
-  h+='<div class="flex items-center gap-2">'+avatar(m.away, logoA);
+  h+='<div class="flex items-center gap-2">'+avatar(m.away);
   h+='<span class="text-[13px] font-semibold truncate flex-1">'+m.away+'</span>';
   h+='<span class="follow-star '+(isAwayFav?'active':'')+'" onclick="event.stopPropagation(); toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span>';
   h+=(m.live?'<span style="color:#00e5ff;font-weight:800;margin-left:4px">'+m.as+'</span>':'')+'</div>';
@@ -312,8 +307,6 @@ function pageLive(){
 }
 function pageMatch(){
   var m=byId(S.mid);if(!m)return'<div class="card p-8 text-center" style="color:#7a8f9e">Match not found. <button onclick="goHome()" style="color:#00e5ff;background:none;border:none;cursor:pointer">Go back</button></div>';
-  var logoH = m.logos ? m.logos[0] : null;
-  var logoA = m.logos ? m.logos[1] : null;
   
   var homeStats = getTeamStats(m.home);
   var awayStats = getTeamStats(m.away);
@@ -324,9 +317,9 @@ function pageMatch(){
   var h='<button onclick="goHome()" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0">← Back to Matches</button>';
   
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
-  h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home, logoH).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'" onclick="toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span></div></div>';
+  h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'" onclick="toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span></div></div>';
   h+='<div style="text-align:center"><div style="font-size:36px;font-weight:900;color:#00e5ff;line-height:1;font-variant-numeric:tabular-nums">'+m.hs+'</div><div style="font-size:36px;font-weight:900;color:#00e5ff;line-height:1;font-variant-numeric:tabular-nums">'+m.as+'</div></div>';
-  h+='<div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.away, logoA).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.away+' <span class="follow-star '+(isAwayFav?'active':'')+'" onclick="toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span></div></div></div></div>';
+  h+='<div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.away).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.away+' <span class="follow-star '+(isAwayFav?'active':'')+'" onclick="toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span></div></div></div></div>';
 
   h+='<div style="display:flex;background:#121c24;border-radius:12px;margin-bottom:16px;border:1px solid #1c2a36;overflow:hidden">';
   h+='<div class="tab '+(S.matchTab==="Markets"?"active":"")+'" onclick="S.matchTab=\'Markets\';render()">Markets</div>';
