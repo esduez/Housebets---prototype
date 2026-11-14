@@ -63,8 +63,6 @@ button{font-family:inherit;cursor:pointer}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .slide-up{animation:slideUp .3s cubic-bezier(0.4,0,0.2,1)}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-/* Yeni İstatistik Tabloları */
 .form-box{width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:10px;font-weight:800;color:#000}
 .form-W{background:#00e676;}
 .form-D{background:#8b9eb0;}
@@ -72,6 +70,11 @@ button{font-family:inherit;cursor:pointer}
 .h2h-table{width:100%;border-collapse:collapse;font-size:11px;}
 .h2h-table td, .h2h-table th{padding:8px 4px;border-bottom:1px solid var(--border);text-align:center;}
 .h2h-table th{color:var(--text-2);font-weight:600;}
+.quick-btn{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 0;font-size:11px;font-weight:800;color:#fff;transition:all .15s}
+.quick-btn:hover{border-color:var(--accent);color:var(--accent)}
+.quick-btn.on{background:var(--accent);color:#000;border-color:var(--accent)}
+.follow-star{cursor:pointer;font-size:14px;color:#555;margin-left:4px;transition:color .2s}
+.follow-star.active{color:#ffaa00;}
 </style>
 </head>
 <body>
@@ -81,15 +84,12 @@ button{font-family:inherit;cursor:pointer}
    MOCK DATA
    ========================================================= */
 var MOCK_MATCHES = [
-  // --- CANLI MAÇLAR (LIVE) ---
   {id:1,sport:"football",league:"Premier League",home:"Arsenal",away:"Brighton",hs:2,as:1,min:67,live:true,odds:[2.10,3.40,3.60],xg:[2.1,0.9],poss:[58,42],shots:[12,5], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/150px-Arsenal_FC.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Brighton_%26_Hove_Albion_logo.svg/150px-Brighton_%26_Hove_Albion_logo.svg.png"]},
   {id:2,sport:"football",league:"LaLiga",home:"Real Madrid",away:"Sevilla",hs:1,as:0,min:54,live:true,odds:[1.35,5.00,8.50],xg:[1.8,0.3],poss:[62,38],shots:[10,3], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/150px-Real_Madrid_CF.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Sevilla_FC_logo.svg/150px-Sevilla_FC_logo.svg.png"]},
   {id:3,sport:"football",league:"Serie A",home:"Inter",away:"Roma",hs:2,as:2,min:78,live:true,odds:[1.90,3.60,3.90],xg:[2.0,1.9],poss:[51,49],shots:[11,10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/150px-FC_Internazionale_Milano_2021.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/AS_Roma_logo_%282017%29.svg/150px-AS_Roma_logo_%282017%29.svg.png"]},
   {id:4,sport:"basketball",league:"NBA",home:"Lakers",away:"Celtics",hs:78,as:82,min:38,live:true,odds:[2.05,1.78],poss:[50,50],shots:[0,0], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/150px-Los_Angeles_Lakers_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Boston_Celtics.svg/150px-Boston_Celtics.svg.png"]},
   {id:5,sport:"esports",league:"CS2 Major",home:"Natus Vincere",away:"FaZe Clan",hs:1,as:0,min:22,live:true,odds:[1.85,1.95], logos:["https://upload.wikimedia.org/wikipedia/en/thumb/2/23/Natus_Vincere_logo.svg/150px-Natus_Vincere_logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/3/3e/FaZe_Clan_logo.svg/150px-FaZe_Clan_logo.svg.png"]},
   {id:6,sport:"tennis",league:"ATP Finals",home:"C. Alcaraz",away:"J. Sinner",hs:1,as:1,min:3,live:true,odds:[1.70,2.10], logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Carlos_Alcaraz_2022.jpg/120px-Carlos_Alcaraz_2022.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Jannik_Sinner_2023.jpg/120px-Jannik_Sinner_2023.jpg"]},
-
-  // --- GELECEK MAÇLAR (UPCOMING) ---
   {id:10,sport:"football",league:"Premier League",home:"Man City",away:"Liverpool",hs:0,as:0,min:-90,live:false,odds:[1.85,3.80,4.00],timeStr:"Today 22:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/150px-Manchester_City_FC_badge.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/150px-Liverpool_FC.svg.png"]},
   {id:11,sport:"football",league:"LaLiga",home:"Barcelona",away:"Atletico",hs:0,as:0,min:-180,live:false,odds:[1.95,3.40,3.80],timeStr:"Tomorrow 21:30", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/150px-FC_Barcelona_%28crest%29.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_Madrid_2017_logo.svg/150px-Atletico_Madrid_2017_logo.svg.png"]},
   {id:12,sport:"football",league:"Bundesliga",home:"Bayern",away:"Dortmund",hs:0,as:0,min:-2880,live:false,odds:[1.70,4.20,4.50],timeStr:"Sat 18:30", logos:["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/150px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png","https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/150px-Borussia_Dortmund_logo.svg.png"]},
@@ -97,29 +97,37 @@ var MOCK_MATCHES = [
   {id:16,sport:"esports",league:"LoL Worlds",home:"T1",away:"Gen.G",hs:0,as:0,min:-1440,live:false,odds:[1.75,2.05],timeStr:"Tomorrow 15:00", logos:["https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/T1_Logo.svg/150px-T1_Logo.svg.png","https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Gen.G_Logo.svg/150px-Gen.G_Logo.svg.png"]}
 ];
 
+var S = {
+  route:"home", mid:1, matches:[],
+  slip:[], stake:10,
+  bets:[
+    {id:1,lbl:"Arsenal v Chelsea",pick:"Arsenal",mkt:"Match Result",od:2.10,st:25,state:"settled",tm:"Yesterday 20:14",res:"WON",ret:52.50},
+    {id:2,lbl:"Real Madrid v Barcelona",pick:"Over 2.5",mkt:"Total Goals",od:1.85,st:50,state:"settled",tm:"Yesterday 18:00",res:"WON",ret:92.50},
+    {id:3,lbl:"Lakers v Warriors",pick:"Lakers",mkt:"Match Result",od:1.90,st:10,state:"settled",tm:"2 days ago",res:"LOST",ret:0}
+  ],
+  follows:["Arsenal","Premier League"], // Hem takım hem lig tutabilir
+  filter:"all", 
+  marketTab:"Markets", matchTab:"Markets", betsTab:"open",
+  search:"", toast:null, susp:{}, balance:1250.00
+};
+
 /* =========================================================
-   STATS GENERATOR (Her takıma özel tutarlı veri üretir)
+   STATS GENERATOR
    ========================================================= */
 function getTeamStats(name) {
   var seed = 0;
   for(var i=0; i<name.length; i++) seed += name.charCodeAt(i);
-  
-  // Lig Sıralaması
   var pos = (seed % 16) + 1;
   var played = 20 + (seed % 5);
   var w = 8 + (seed % 8);
   var d = 2 + (seed % 5);
   var l = played - w - d;
   var pts = w*3 + d;
-  
-  // Form (Son 10 Maç)
   var form = [];
   for(var i=0; i<10; i++) {
     var v = (seed + i * 7) % 10;
     form.push(v < 5 ? "W" : v < 7 ? "D" : "L");
   }
-  
-  // Son 10 Maç Sonuçları
   var last10 = [];
   for(var i=0; i<10; i++) {
     last10.push({
@@ -129,25 +137,23 @@ function getTeamStats(name) {
       score: ((seed+i)%3) + "-" + ((seed+i*2)%3)
     });
   }
-  
   return { pos: pos, played: played, w: w, d: d, l: l, pts: pts, form: form, last10: last10 };
 }
 
 /* =========================================================
-   CORE
+   CORE & NAVIGATION
    ========================================================= */
-var S = {
-  route:"home", mid:1, matches:[],
-  slip:[], stake:10, bets:[],
-  follows:[], filter:"all", 
-  marketTab:"Markets", matchTab:"Markets", betsTab:"open",
-  search:"", toast:null, susp:{}, balance:1250.00
-};
-
 window.nav = function(route, id) {
   S.route = route;
   if (id !== undefined) S.mid = id;
   window.scrollTo(0, 0);
+  render();
+};
+
+window.toggleFollow = function(name) {
+  var idx = S.follows.indexOf(name);
+  if(idx >= 0) S.follows.splice(idx, 1);
+  else S.follows.push(name);
   render();
 };
 
@@ -184,14 +190,18 @@ function placeBet(){
   if(potential()>S.balance){return toast("Insufficient balance",false)}
   if(Math.random()<0.1){S.slip=S.slip.map(function(s){return Object.assign({},s,{status:"susp"})});return toast("Bet failed — market moved.",false)}
   S.slip.forEach(function(s){
-    S.bets.unshift({id:Date.now()+Math.random(),lbl:s.lbl,pick:s.pick,mkt:s.mkt,od:s.od,st:S.stake,state:"open",tm:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})})
+    S.bets.unshift({
+      id:Date.now()+Math.random(), lbl:s.lbl, pick:s.pick, mkt:s.mkt, od:s.od, st:S.stake, 
+      state:"open", tm:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+      ret: S.stake * s.od // Tahmini dönüş
+    });
   });
   S.balance-=S.stake*S.slip.length;
   S.slip=[];nav('bets');toast("Bet placed successfully",true);
 }
 
 /* =========================================================
-   UI
+   UI COMPONENTS
    ========================================================= */
 function oddsBtn(m,mkt,pick,od,label){
   var k=m.id+"|"+mkt+"|"+pick;var sel=null;
@@ -219,14 +229,26 @@ function matchRow(m){
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
   
+  var isHomeFav = S.follows.includes(m.home);
+  var isAwayFav = S.follows.includes(m.away);
+
   var h='<div class="match-row fade-in" onclick="nav(\'match\', '+m.id+')">';
   h+='<div class="flex items-center justify-between mb-2 text-[10px]"><div class="flex items-center gap-1.5">';
   if(m.live)h+='<span class="live-dot"></span><span style="color:#ff4444;font-weight:800">LIVE</span><span style="color:#555">·</span>';
   h+='<span style="color:'+(m.live?"#ff4444":"#8b9eb0")+';font-weight:700">'+clock(m)+'</span></div><div style="color:#7a8f9e;font-weight:600">'+m.league+'</div></div>';
   
   h+='<div class="flex items-center gap-3"><div class="flex-1 min-w-0 space-y-1.5">';
-  h+='<div class="flex items-center gap-2">'+avatar(m.home, logoH)+'<span class="text-[13px] font-semibold truncate flex-1">'+m.home+'</span>'+(m.live?'<span style="color:#00e5ff;font-weight:800">'+m.hs+'</span>':'')+'</div>';
-  h+='<div class="flex items-center gap-2">'+avatar(m.away, logoA)+'<span class="text-[13px] font-semibold truncate flex-1">'+m.away+'</span>'+(m.live?'<span style="color:#00e5ff;font-weight:800">'+m.as+'</span>':'')+'</div>';
+  
+  // Ev Sahibi
+  h+='<div class="flex items-center gap-2">'+avatar(m.home, logoH);
+  h+='<span class="text-[13px] font-semibold truncate flex-1" onclick="event.stopPropagation(); toggleFollow(\''+m.home+'\')">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'">'+(isHomeFav?'★':'☆')+'</span></span>';
+  h+=(m.live?'<span style="color:#00e5ff;font-weight:800">'+m.hs+'</span>':'')+'</div>';
+  
+  // Deplasman
+  h+='<div class="flex items-center gap-2">'+avatar(m.away, logoA);
+  h+='<span class="text-[13px] font-semibold truncate flex-1" onclick="event.stopPropagation(); toggleFollow(\''+m.away+'\')">'+m.away+' <span class="follow-star '+(isAwayFav?'active':'')+'">'+(isAwayFav?'★':'☆')+'</span></span>';
+  h+=(m.live?'<span style="color:#00e5ff;font-weight:800">'+m.as+'</span>':'')+'</div>';
+  
   h+='</div>';
   
   h+='<div style="width:52%;min-width:135px"><div class="odds-labels grid '+cols+' gap-1">';
@@ -268,6 +290,13 @@ function pageHome(){
   });
   h+='</div>';
 
+  // YOUR FOLLOWS SECTION
+  var favs = S.matches.filter(function(m){ return S.follows.includes(m.home) || S.follows.includes(m.away) || S.follows.includes(m.league); });
+  if(favs.length > 0 && S.filter === "all") {
+    h+='<div class="flex items-center justify-between mb-1 mt-2"><h2 class="text-[14px] font-bold" style="color:#ffaa00">★ Your Follows</h2><span style="color:#7a8f9e;font-size:11px">'+favs.length+' matches</span></div>';
+    h+=groupByLeague(favs).map(leagueBlock).join("");
+  }
+
   var liv=live().filter(function(m){return S.filter==="all"||m.sport===S.filter});
   h+='<div class="flex items-center justify-between mb-1 mt-5"><h2 class="text-[14px] font-bold flex items-center gap-2"><span class="live-dot"></span>Live Now</h2><span style="color:#7a8f9e;font-size:11px">'+liv.length+' in play</span></div>';
   h+=liv.length?groupByLeague(liv.slice(0,10)).map(leagueBlock).join(""):'<div class="empty"><div class="empty-icon">⏳</div><div class="empty-title">No live matches</div></div>';
@@ -298,16 +327,18 @@ function pageMatch(){
   var logoH = m.logos ? m.logos[0] : null;
   var logoA = m.logos ? m.logos[1] : null;
   
-  // Yeni İstatistikler
   var homeStats = getTeamStats(m.home);
   var awayStats = getTeamStats(m.away);
   
+  var isHomeFav = S.follows.includes(m.home);
+  var isAwayFav = S.follows.includes(m.away);
+
   var h='<button onclick="nav(\'home\')" style="display:inline-block;background:none;border:none;color:#7a8f9e;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:12px;padding:0">← Back to Matches</button>';
   
   h+='<div class="card p-5 mb-4"><div class="flex justify-between text-[10px] mb-3"><span style="color:#a09cb8">'+m.league+'</span><span style="color:'+(m.live?"#ff4444":"#a09cb8")+';font-weight:800">'+(m.live?"● LIVE · "+clock(m):clock(m))+'</span></div>';
-  h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home, logoH).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+'</div></div>';
+  h+='<div class="flex items-center justify-between gap-4"><div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.home, logoH).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.home+' <span class="follow-star '+(isHomeFav?'active':'')+'" onclick="toggleFollow(\''+m.home+'\')">'+(isHomeFav?'★':'☆')+'</span></div></div>';
   h+='<div style="text-align:center"><div style="font-size:36px;font-weight:900;color:#00e5ff;line-height:1;font-variant-numeric:tabular-nums">'+m.hs+'</div><div style="font-size:36px;font-weight:900;color:#00e5ff;line-height:1;font-variant-numeric:tabular-nums">'+m.as+'</div></div>';
-  h+='<div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.away, logoA).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.away+'</div></div></div></div>';
+  h+='<div style="text-align:center;flex:1"><div style="margin:0 auto 6px">'+avatar(m.away, logoA).replace("width:28px;height:28px","width:52px;height:52px;font-size:16px")+'</div><div class="text-[14px] font-bold">'+m.away+' <span class="follow-star '+(isAwayFav?'active':'')+'" onclick="toggleFollow(\''+m.away+'\')">'+(isAwayFav?'★':'☆')+'</span></div></div></div></div>';
 
   h+='<div style="display:flex;background:#121c24;border-radius:12px;margin-bottom:16px;border:1px solid #1c2a36;overflow:hidden">';
   h+='<div class="tab '+(S.matchTab==="Markets"?"active":"")+'" onclick="S.matchTab=\'Markets\';render()">Markets</div>';
@@ -345,57 +376,32 @@ function pageMatch(){
       h+='</div></div>';
     });
   } else {
-    // ZENGİNLEŞTİRİLMİŞ İSTATİSTİK SEKMESİ
-    
-    // 1. Lig Sıralaması & Form
+    // Stats & Analysis
     h+='<div class="card p-4 mb-4">';
     h+='<h3 style="font-size:14px;font-weight:800;margin-bottom:16px;color:#fff">Team Standings & Form</h3>';
-    
     h+='<div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:20px">';
-    // Ev Sahibi
     h+='<div style="flex:1;border-right:1px solid #233442"><div style="font-size:11px;color:#8b9eb0;margin-bottom:4px">Position</div><div style="font-size:24px;font-weight:900;color:#00e5ff">#'+homeStats.pos+'</div><div style="font-size:10px;color:#8b9eb0">'+homeStats.pts+' PTS</div></div>';
-    // VS
     h+='<div style="flex:1;display:flex;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:800;color:#555">VS</span></div>';
-    // Deplasman
     h+='<div style="flex:1;border-left:1px solid #233442"><div style="font-size:11px;color:#8b9eb0;margin-bottom:4px">Position</div><div style="font-size:24px;font-weight:900;color:#00e5ff">#'+awayStats.pos+'</div><div style="font-size:10px;color:#8b9eb0">'+awayStats.pts+' PTS</div></div>';
     h+='</div>';
-
-    // Form (Son 10 Maç)
     h+='<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:10px;color:#8b9eb0;font-weight:600"><span>'+m.home+' (Last 10)</span><span>Form</span></div>';
     h+='<div style="display:flex;gap:4px;justify-content:flex-end;margin-bottom:16px">';
     homeStats.form.forEach(function(f){h+='<div class="form-box form-'+f+'">'+f+'</div>'});
     h+='</div>';
-    
     h+='<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:10px;color:#8b9eb0;font-weight:600"><span>'+m.away+' (Last 10)</span><span>Form</span></div>';
     h+='<div style="display:flex;gap:4px;justify-content:flex-end">';
     awayStats.form.forEach(function(f){h+='<div class="form-box form-'+f+'">'+f+'</div>'});
-    h+='</div>';
-    h+='</div>';
-
-    // 2. Son 10 Maç Sonuçları (H2H tarzı yan yana veya alt alta)
-    h+='<div class="card p-4 mb-4">';
-    h+='<h3 style="font-size:14px;font-weight:800;margin-bottom:16px;color:#fff">Last 10 Matches (Recent Results)</h3>';
-    h+='<div style="display:flex;gap:16px;overflow-x:auto;scrollbar-width:none">';
-    
-    // Ev Sahibi Tablo
-    h+='<div style="flex:1;min-width:200px"><div style="font-size:11px;font-weight:700;color:#00e5ff;margin-bottom:8px;border-bottom:1px solid #1c2a36;padding-bottom:4px">'+m.home+'</div>';
-    h+='<table class="h2h-table"><tbody>';
-    homeStats.last10.forEach(function(l){
-      h+='<tr><td style="color:#7a8f9e;text-align:left">'+l.date+'</td><td style="text-align:left">'+l.opp+'</td><td><span class="form-box form-'+l.res+'" style="width:16px;height:16px;font-size:8px;display:inline-flex">'+l.res+'</span></td><td style="font-weight:700">'+l.score+'</td></tr>';
-    });
-    h+='</tbody></table></div>';
-
-    // Deplasman Tablo
-    h+='<div style="flex:1;min-width:200px"><div style="font-size:11px;font-weight:700;color:#00e5ff;margin-bottom:8px;border-bottom:1px solid #1c2a36;padding-bottom:4px">'+m.away+'</div>';
-    h+='<table class="h2h-table"><tbody>';
-    awayStats.last10.forEach(function(l){
-      h+='<tr><td style="color:#7a8f9e;text-align:left">'+l.date+'</td><td style="text-align:left">'+l.opp+'</td><td><span class="form-box form-'+l.res+'" style="width:16px;height:16px;font-size:8px;display:inline-flex">'+l.res+'</span></td><td style="font-weight:700">'+l.score+'</td></tr>';
-    });
-    h+='</tbody></table></div>';
-
     h+='</div></div>';
 
-    // 3. Canlı Maç İstatistikleri (Eski xG vb.)
+    h+='<div class="card p-4 mb-4"><h3 style="font-size:14px;font-weight:800;margin-bottom:16px;color:#fff">Last 10 Matches</h3>';
+    h+='<div style="display:flex;gap:16px;overflow-x:auto;scrollbar-width:none">';
+    h+='<div style="flex:1;min-width:200px"><div style="font-size:11px;font-weight:700;color:#00e5ff;margin-bottom:8px;border-bottom:1px solid #1c2a36;padding-bottom:4px">'+m.home+'</div><table class="h2h-table"><tbody>';
+    homeStats.last10.forEach(function(l){ h+='<tr><td style="color:#7a8f9e;text-align:left">'+l.date+'</td><td style="text-align:left">'+l.opp+'</td><td><span class="form-box form-'+l.res+'" style="width:16px;height:16px;font-size:8px;display:inline-flex">'+l.res+'</span></td><td style="font-weight:700">'+l.score+'</td></tr>'; });
+    h+='</tbody></table></div>';
+    h+='<div style="flex:1;min-width:200px"><div style="font-size:11px;font-weight:700;color:#00e5ff;margin-bottom:8px;border-bottom:1px solid #1c2a36;padding-bottom:4px">'+m.away+'</div><table class="h2h-table"><tbody>';
+    awayStats.last10.forEach(function(l){ h+='<tr><td style="color:#7a8f9e;text-align:left">'+l.date+'</td><td style="text-align:left">'+l.opp+'</td><td><span class="form-box form-'+l.res+'" style="width:16px;height:16px;font-size:8px;display:inline-flex">'+l.res+'</span></td><td style="font-weight:700">'+l.score+'</td></tr>'; });
+    h+='</tbody></table></div></div></div>';
+
     if(m.live) {
       h+='<div class="card p-4 mb-4"><h3 style="font-size:14px;font-weight:800;margin-bottom:16px;color:#fff">Live Match Stats</h3>';
       var poss = m.poss || [50,50];
@@ -406,7 +412,6 @@ function pageMatch(){
       h+='<div class="stat-bar-container"><div class="stat-label"><span>'+xg[0].toFixed(2)+'</span><span style="color:#00e5ff;font-weight:800">xG (Expected Goals)</span><span>'+xg[1].toFixed(2)+'</span></div><div class="stat-bar"><div class="stat-bar-home" style="width:'+(xg[0]/(xg[0]+xg[1]||1)*100)+'%"></div><div class="stat-bar-away" style="width:'+(xg[1]/(xg[0]+xg[1]||1)*100)+'%"></div></div></div></div>';
     }
 
-    // 4. Model Tahminleri
     h+='<div class="card p-4 mb-4"><h3 style="font-size:14px;font-weight:800;margin-bottom:16px;color:#fff;display:flex;align-items:center;gap:8px"><span>🤖</span> Odds Engine</h3>';
     h+='<div class="model-box"><div class="model-title"><span>📈</span> Poisson Distribution</div>';
     h+='<div class="model-val"><span>Home Win Probability</span><span>'+(Math.random()*20+40).toFixed(1)+'%</span></div>';
@@ -440,6 +445,14 @@ function slipBody(){
   var h='<div>'+S.slip.map(slipLine).join("")+'</div>';
   h+='<div style="background:#0b141c;border-radius:10px;padding:12px;margin-top:12px;border:1px solid #1c2a36">';
   h+='<div class="flex justify-between" style="font-size:10px;color:#7a8f9e;margin-bottom:6px"><span>Stake (USDT)</span><span style="font-weight:800;color:#ffaa00">SINGLES ONLY</span></div>';
+  
+  // Quick Bet Buttons
+  h+='<div style="display:flex;gap:4px;margin-bottom:6px">';
+  [5, 10, 25, 50, 100].forEach(function(v){ 
+    h+='<button class="quick-btn '+(S.stake===v?'on':'')+'" onclick="S.stake='+v+';render()">'+v+'</button>'; 
+  });
+  h+='</div>';
+
   h+='<input type="number" value="'+S.stake+'" oninput="S.stake=+this.value||0;render()" style="width:100%;background:#121c24;border:1px solid #1c2a36;border-radius:8px;padding:10px 12px;font-size:14px;font-weight:800;color:#fff;outline:none;font-variant-numeric:tabular-nums" onfocus="this.style.borderColor=\'#00e5ff\'" onblur="this.style.borderColor=\'#1c2a36\'">';
   h+='<div class="flex justify-between" style="font-size:12px;margin-top:8px"><span style="color:#7a8f9e">Potential Return</span><span style="font-weight:900;color:#00e5ff;font-variant-numeric:tabular-nums">'+fmt(potential())+' USDT</span></div>';
   h+='<button '+(bad?"disabled":"")+' onclick="placeBet()" style="width:100%;margin-top:10px;padding:12px;border-radius:8px;font-weight:900;font-size:13px;border:none;cursor:pointer;transition:all .2s;'+(bad?"background:#192833;color:#7a8f9e;cursor:not-allowed":"background:#00e5ff;color:#000")+'">'+(bad?"Resolve selections first":"Place Bet →")+'</button>';
@@ -450,19 +463,27 @@ function pageBets(){
   var h='<h1 class="text-xl font-bold mb-4">Bet Slip & My Bets</h1><div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
   h+='<div class="card p-4"><div class="flex justify-between items-center mb-3"><h2 class="text-[13px] font-bold">Bet Slip</h2><span style="font-size:9px;color:#7a8f9e;font-weight:800;padding:2px 8px;background:#192833;border-radius:4px;letter-spacing:.05em">SINGLES</span></div>'+slipBody()+'</div>';
   h+='<div class="card p-4"><div class="flex justify-between items-center mb-3"><h2 class="text-[13px] font-bold">My Bets</h2><div class="flex gap-1">';
-  ["open","settled"].forEach(function(t){h+='<button class="pill '+(S.betsTab===t?"on":"")+'" onclick="S.betsTab=\''+t+'\';render()" style="padding:4px 10px;font-size:10px">'+(t==="open"?"Open":"Settled")+'</button>'});
+  ["open","settled"].forEach(function(t){h+='<button class="pill '+(S.betsTab===t?"on":"")+'" onclick="S.betsTab=\''+t+'\';render()" style="padding:4px 10px;font-size:10px">'+(t==="open"?"Open":"History")+'</button>'});
   h+='</div></div>';
   if(list.length){
     list.forEach(function(b){
-      h+='<div class="slip-item"><div class="flex justify-between" style="font-size:9px;color:#7a8f9e;margin-bottom:2px"><span>'+b.tm+' · Single</span><span style="color:'+(b.state==="open"?"#00e5ff":"#7a8f9e")+';font-weight:800">'+(b.state==="open"?"OPEN":"SETTLED")+'</span></div>';
+      var statusColor = b.state==="open"?"#00e5ff":(b.res==="WON"?"#00e676":"#ff4444");
+      var statusText = b.state==="open"?"OPEN":(b.res==="WON"?"WON":"LOST");
+      
+      h+='<div class="slip-item"><div class="flex justify-between" style="font-size:9px;color:#7a8f9e;margin-bottom:2px"><span>'+b.tm+' · Single</span><span style="color:'+statusColor+';font-weight:800">'+statusText+'</span></div>';
       h+='<div style="font-size:10px;color:#8b9eb0">'+b.lbl+'</div>';
       h+='<div class="flex justify-between" style="font-size:12px;margin-top:2px"><span class="font-bold">'+b.pick+'</span><span class="font-extrabold" style="font-variant-numeric:tabular-nums">'+fmt(b.od)+'</span></div>';
-      h+='<div class="flex justify-between" style="font-size:10px;margin-top:4px;color:#7a8f9e"><span>Stake: '+b.st+' USDT</span><span style="color:#00e5ff;font-weight:800">Return: '+fmt(b.st*b.od)+' USDT</span></div>';
-      if(b.state==="open")h+='<button style="margin-top:6px;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);color:#00e5ff;font-size:10px;font-weight:800;cursor:pointer;padding:5px 10px;border-radius:6px" onclick="toast(\'Cash out requested (demo)\',true)">Cash Out '+fmt(b.st*0.92)+' USDT</button>';
+      
+      if(b.state==="open") {
+         h+='<div class="flex justify-between" style="font-size:10px;margin-top:4px;color:#7a8f9e"><span>Stake: '+b.st+' USDT</span><span style="color:#00e5ff;font-weight:800">Return: '+fmt(b.st*b.od)+' USDT</span></div>';
+         h+='<button style="margin-top:6px;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);color:#00e5ff;font-size:10px;font-weight:800;cursor:pointer;padding:5px 10px;border-radius:6px" onclick="toast(\'Cash out requested (demo)\',true)">Cash Out '+fmt(b.st*0.92)+' USDT</button>';
+      } else {
+         h+='<div class="flex justify-between" style="font-size:10px;margin-top:4px;color:#7a8f9e"><span>Stake: '+b.st+' USDT</span><span style="color:'+(b.res==="WON"?"#00e676":"#ff4444")+';font-weight:800">'+(b.res==="WON"?"Return: "+fmt(b.ret)+" USDT":"Return: 0 USDT")+'</span></div>';
+      }
       h+='</div>';
     });
   }else{
-    h+='<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">No '+(S.betsTab==="open"?"open":"settled")+' bets</div></div>';
+    h+='<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">No '+(S.betsTab==="open"?"open":"previous")+' bets</div></div>';
   }
   return h+'</div></div>';
 }
