@@ -105,7 +105,7 @@ var S = {
     {id:2,lbl:"Real Madrid v Barcelona",pick:"Over 2.5",mkt:"Total Goals",od:1.85,st:50,state:"settled",tm:"Yesterday 18:00",res:"WON",ret:92.50},
     {id:3,lbl:"Lakers v Warriors",pick:"Lakers",mkt:"Match Result",od:1.90,st:10,state:"settled",tm:"2 days ago",res:"LOST",ret:0}
   ],
-  follows:["Arsenal","Premier League"], // Hem takım hem lig tutabilir
+  follows:["Arsenal","Premier League"],
   filter:"all", 
   marketTab:"Markets", matchTab:"Markets", betsTab:"open",
   search:"", toast:null, susp:{}, balance:1250.00
@@ -141,7 +141,7 @@ function getTeamStats(name) {
 }
 
 /* =========================================================
-   CORE & NAVIGATION
+   CORE & NAVIGATION (Garantili Geçiş)
    ========================================================= */
 window.nav = function(route, id) {
   S.route = route;
@@ -193,7 +193,7 @@ function placeBet(){
     S.bets.unshift({
       id:Date.now()+Math.random(), lbl:s.lbl, pick:s.pick, mkt:s.mkt, od:s.od, st:S.stake, 
       state:"open", tm:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
-      ret: S.stake * s.od // Tahmini dönüş
+      ret: S.stake * s.od
     });
   });
   S.balance-=S.stake*S.slip.length;
@@ -290,7 +290,6 @@ function pageHome(){
   });
   h+='</div>';
 
-  // YOUR FOLLOWS SECTION
   var favs = S.matches.filter(function(m){ return S.follows.includes(m.home) || S.follows.includes(m.away) || S.follows.includes(m.league); });
   if(favs.length > 0 && S.filter === "all") {
     h+='<div class="flex items-center justify-between mb-1 mt-2"><h2 class="text-[14px] font-bold" style="color:#ffaa00">★ Your Follows</h2><span style="color:#7a8f9e;font-size:11px">'+favs.length+' matches</span></div>';
@@ -376,7 +375,6 @@ function pageMatch(){
       h+='</div></div>';
     });
   } else {
-    // Stats & Analysis
     h+='<div class="card p-4 mb-4">';
     h+='<h3 style="font-size:14px;font-weight:800;margin-bottom:16px;color:#fff">Team Standings & Form</h3>';
     h+='<div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:20px">';
@@ -446,7 +444,6 @@ function slipBody(){
   h+='<div style="background:#0b141c;border-radius:10px;padding:12px;margin-top:12px;border:1px solid #1c2a36">';
   h+='<div class="flex justify-between" style="font-size:10px;color:#7a8f9e;margin-bottom:6px"><span>Stake (USDT)</span><span style="font-weight:800;color:#ffaa00">SINGLES ONLY</span></div>';
   
-  // Quick Bet Buttons
   h+='<div style="display:flex;gap:4px;margin-bottom:6px">';
   [5, 10, 25, 50, 100].forEach(function(v){ 
     h+='<button class="quick-btn '+(S.stake===v?'on':'')+'" onclick="S.stake='+v+';render()">'+v+'</button>'; 
